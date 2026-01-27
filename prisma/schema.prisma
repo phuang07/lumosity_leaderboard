@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum GameCategory {
+  ATTENTION
+  MEMORY
+  FLEXIBILITY
+  SPEED
+  PROBLEM_SOLVING
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}
+
+enum AchievementType {
+  FIRST_SCORE
+  FIVE_GAMES
+  TEN_GAMES
+  TOP_10
+  FRIEND_CHAMPION
+  STREAK_MASTER
+  PERFECTIONIST
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  username      String    @unique
+  passwordHash  String    @map("password_hash")
+  avatarUrl     String?   @map("avatar_url")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  scores        Score[]
+  friendshipsAsUser   Friendship[] @relation("UserFriendships")
+  friendshipsAsFriend  Friendship[] @relation("FriendFriendships")
+  achievements  Achievement[]
+  userStats     UserStats?
+
+  @@map("users")
+}
+
+model Game {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  category    GameCategory
+  description String?
+  icon        String?
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  scores      Score[]
+
+  @@map("games")
+}
+
+model Score {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  gameId     String   @map("game_id")
+  score      Int
+  achievedAt DateTime @default(now()) @map("achieved_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game       Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gameId])
+  @@map("scores")
+}
+
+model Friendship {
+  id        String           @id @default(uuid())
+  userId    String           @map("user_id")
+  friendId  String           @map("friend_id")
+  status    FriendshipStatus @default(PENDING)
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  user      User             @relation("UserFriendships", fields: [userId], references: [id], onDelete: Cascade)
+  friend    User             @relation("FriendFriendships", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, friendId])
+  @@map("friendships")
+}
+
+model Achievement {
+  id        String          @id @default(uuid())
+  userId    String          @map("user_id")
+  type      AchievementType
+  unlockedAt DateTime       @default(now()) @map("unlocked_at")
+
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type])
+  @@map("achievements")
+}
+
+model UserStats {
+  userId           String   @id @map("user_id")
+  totalGamesPlayed Int      @default(0) @map("total_games_played")
+  totalScoreSum    BigInt   @default(0) @map("total_score_sum")
+  rankByGameCount  Int?     @map("rank_by_game_count")
+  lastUpdated      DateTime @default(now()) @updatedAt @map("last_updated")
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_stats")
+}

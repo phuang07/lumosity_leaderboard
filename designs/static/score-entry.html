@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Score - Lumosity Leaderboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <div class="logo">🧠 Lumosity Leaderboard</div>
+        <ul class="nav-links">
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="leaderboard.html">Leaderboard</a></li>
+          <li><a href="score-entry.html" class="active">Add Score</a></li>
+          <li><a href="friend-comparison.html">Compare</a></li>
+        </ul>
+        <div class="user-menu" id="userMenu">
+          <button class="user-menu-trigger" onclick="toggleUserMenu()">
+            <div class="avatar">JD</div>
+            <span>John Doe</span>
+            <svg class="user-menu-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div class="user-menu-dropdown">
+            <div class="user-menu-header">
+              <div class="user-menu-header-name">John Doe</div>
+              <div class="user-menu-header-status">Signed in</div>
+            </div>
+            <a href="dashboard.html" class="user-menu-item">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              Dashboard
+            </a>
+            <a href="score-entry.html" class="user-menu-item">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Add Score
+            </a>
+            <div class="user-menu-divider"></div>
+            <a href="login.html" class="user-menu-item logout">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Sign Out
+            </a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <script>
+    function toggleUserMenu() {
+      document.getElementById('userMenu').classList.toggle('open');
+    }
+    
+    document.addEventListener('click', function(event) {
+      const userMenu = document.getElementById('userMenu');
+      if (!userMenu.contains(event.target)) {
+        userMenu.classList.remove('open');
+      }
+    });
+  </script>
+
+  <!-- Main Content -->
+  <main class="container" style="margin-top: 2rem; max-width: 800px;">
+    <div class="card">
+      <div class="card-header">
+        <h1 class="card-title">Submit Your Score</h1>
+      </div>
+
+      <form style="margin-top: 1.5rem;">
+        <div class="form-group">
+          <label class="form-label">Select Game</label>
+          <select class="form-select" style="font-size: 1rem;">
+            <option>Choose a game...</option>
+            <optgroup label="Attention">
+              <option>Speed Match</option>
+              <option>Train of Thought</option>
+              <option>Ebb and Flow</option>
+            </optgroup>
+            <optgroup label="Memory">
+              <option>Memory Matrix</option>
+              <option>Memory Lane</option>
+              <option>Memory Match</option>
+            </optgroup>
+            <optgroup label="Flexibility">
+              <option>Word Bubbles</option>
+              <option>Disillusion</option>
+              <option>Color Match</option>
+            </optgroup>
+            <optgroup label="Speed">
+              <option>Speed Match</option>
+              <option>Speed Match Pro</option>
+              <option>Rush Hour</option>
+            </optgroup>
+            <optgroup label="Problem Solving">
+              <option>Raindrops</option>
+              <option>Pet Detective</option>
+              <option>Rotation Matrix</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your Score</label>
+          <input type="number" class="form-input" placeholder="Enter your highest score" style="font-size: 1.25rem; padding: 1rem;">
+          <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+            Enter your personal best score for this game
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Date Achieved (Optional)</label>
+          <input type="date" class="form-input">
+          <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+            Leave blank to use today's date
+          </div>
+        </div>
+
+        <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <div style="font-weight: 600; margin-bottom: 0.5rem;">💡 Tip</div>
+          <div style="font-size: 0.875rem; color: var(--text-secondary);">
+            Only your highest score for each game will be saved. If you submit a lower score, it will be ignored.
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+          <button type="submit" class="btn btn-primary" style="flex: 1; padding: 1rem; font-size: 1rem;">
+            Submit Score
+          </button>
+          <button type="button" class="btn btn-outline" style="padding: 1rem;">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Recent Scores -->
+    <div class="card" style="margin-top: 2rem;">
+      <div class="card-header">
+        <h2 class="card-title">Your Recent Scores</h2>
+        <a href="#" style="color: var(--primary); text-decoration: none; font-size: 0.875rem;">View All</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+          <div>
+            <div style="font-weight: 600;">Speed Match</div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">2 days ago</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">12,450</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Personal Best</div>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+          <div>
+            <div style="font-weight: 600;">Memory Matrix</div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">5 days ago</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">8,920</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Personal Best</div>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+          <div>
+            <div style="font-weight: 600;">Word Bubbles</div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">1 week ago</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">15,680</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Personal Best</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Categories -->
+    <div class="card" style="margin-top: 2rem;">
+      <h2 class="card-title" style="margin-bottom: 1rem;">Explore Games by Category</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+        <div style="padding: 1.5rem; background: var(--bg-light); border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(59, 130, 246, 0.1)'" onmouseout="this.style.background='var(--bg-light)'">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎯</div>
+          <div style="font-weight: 600;">Attention</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">12 games</div>
+        </div>
+        <div style="padding: 1.5rem; background: var(--bg-light); border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(59, 130, 246, 0.1)'" onmouseout="this.style.background='var(--bg-light)'">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧠</div>
+          <div style="font-weight: 600;">Memory</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">10 games</div>
+        </div>
+        <div style="padding: 1.5rem; background: var(--bg-light); border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(59, 130, 246, 0.1)'" onmouseout="this.style.background='var(--bg-light)'">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔄</div>
+          <div style="font-weight: 600;">Flexibility</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">8 games</div>
+        </div>
+        <div style="padding: 1.5rem; background: var(--bg-light); border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(59, 130, 246, 0.1)'" onmouseout="this.style.background='var(--bg-light)'">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
+          <div style="font-weight: 600;">Speed</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">10 games</div>
+        </div>
+        <div style="padding: 1.5rem; background: var(--bg-light); border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(59, 130, 246, 0.1)'" onmouseout="this.style.background='var(--bg-light)'">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧩</div>
+          <div style="font-weight: 600;">Problem Solving</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">10 games</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
