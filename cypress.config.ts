@@ -7,9 +7,19 @@ export default defineConfig({
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
     viewportWidth: 1280,
     viewportHeight: 720,
-    video: false,
+    video: true,
+    videosFolder: 'cypress/videos',
     screenshotOnRunFailure: true,
+    screenshotsFolder: 'cypress/screenshots',
     defaultCommandTimeout: 10000,
+    reporter: 'mochawesome',
+    reporterOptions: {
+      reportDir: 'cypress/reports',
+      overwrite: false,
+      html: true,
+      json: true,
+      timestamp: 'mmddyyyy_HHMMss',
+    },
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },

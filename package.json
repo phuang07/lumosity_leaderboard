@@ -16,6 +16,11 @@
     "cypress:run": "cypress run",
     "test:e2e": "cypress run",
     "test:e2e:headed": "cypress run --headed",
+    "test:e2e:ci": "cypress run --browser chrome",
+    "test:report:merge": "mochawesome-merge cypress/reports/*.json > cypress/reports/merged-report.json",
+    "test:report:generate": "marge cypress/reports/merged-report.json -f report -o cypress/reports/html",
+    "test:report": "npm run test:report:merge && npm run test:report:generate",
+    "test:clean": "rm -rf cypress/reports cypress/videos cypress/screenshots",
     "clean": "rm -rf .next",
     "clean:next": "rm -rf .next",
     "clean:prisma": "rm -rf node_modules/.prisma node_modules/@prisma/client",
@@ -47,6 +52,9 @@
   },
   "devDependencies": {
     "cypress": "^15.9.0",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^4.3.0",
+    "mochawesome-report-generator": "^6.2.0",
     "tsx": "^4.21.0"
   }
 }

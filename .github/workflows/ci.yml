@@ -1,0 +1,157 @@
+name: CI - Cypress Tests
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+env:
+  NODE_VERSION: '20'
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/lumosity_test
+  AUTH_SECRET: test-auth-secret-for-ci-pipeline-only
+
+jobs:
+  cypress-tests:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lumosity_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Push database schema
+        run: npx prisma db push
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      - name: Seed database
+        run: npm run db:seed
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      - name: Build Next.js application
+        run: npm run build
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          AUTH_SECRET: ${{ env.AUTH_SECRET }}
+
+      - name: Create reports directory
+        run: mkdir -p cypress/reports
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start -- -p 3001
+          wait-on: 'http://localhost:3001'
+          wait-on-timeout: 120
+          browser: chrome
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          AUTH_SECRET: ${{ env.AUTH_SECRET }}
+
+      - name: Merge test reports
+        if: always()
+        run: |
+          if ls cypress/reports/*.json 1> /dev/null 2>&1; then
+            npx mochawesome-merge cypress/reports/*.json > cypress/reports/merged-report.json
+            npx marge cypress/reports/merged-report.json -f report -o cypress/reports/html --inline
+          else
+            echo "No test report files found"
+          fi
+
+      - name: Upload Cypress screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          retention-days: 7
+
+      - name: Upload Cypress videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Upload HTML test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-html-report
+          path: cypress/reports/html
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Upload JSON test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-json-report
+          path: cypress/reports/merged-report.json
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Generate test summary
+        if: always()
+        run: |
+          echo "## 🧪 Cypress Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Triggered by:** @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Artifact | Description |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| cypress-html-report | Interactive HTML test report |" >> $GITHUB_STEP_SUMMARY
+          echo "| cypress-json-report | JSON test results for CI integration |" >> $GITHUB_STEP_SUMMARY
+          echo "| cypress-videos | Test execution recordings |" >> $GITHUB_STEP_SUMMARY
+          echo "| cypress-screenshots | Screenshots of failed tests |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f cypress/reports/merged-report.json ]; then
+            echo "### 📊 Test Statistics" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            TOTAL=$(cat cypress/reports/merged-report.json | jq -r '.stats.tests // 0')
+            PASSED=$(cat cypress/reports/merged-report.json | jq -r '.stats.passes // 0')
+            FAILED=$(cat cypress/reports/merged-report.json | jq -r '.stats.failures // 0')
+            PENDING=$(cat cypress/reports/merged-report.json | jq -r '.stats.pending // 0')
+            DURATION=$(cat cypress/reports/merged-report.json | jq -r '.stats.duration // 0')
+            echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| Total Tests | $TOTAL |" >> $GITHUB_STEP_SUMMARY
+            echo "| ✅ Passed | $PASSED |" >> $GITHUB_STEP_SUMMARY
+            echo "| ❌ Failed | $FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| ⏸️ Pending | $PENDING |" >> $GITHUB_STEP_SUMMARY
+            echo "| ⏱️ Duration | ${DURATION}ms |" >> $GITHUB_STEP_SUMMARY
+          fi

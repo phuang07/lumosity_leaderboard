@@ -19,6 +19,7 @@
 cypress/screenshots
 cypress/videos
 cypress/downloads
+cypress/reports
 cypress/.nyc_output
 
 # Next.js
