@@ -1,7 +1,8 @@
 [build]
   command = "npm run build"
-  # The @netlify/plugin-nextjs handles the publish directory automatically
-  # Do not set publish directory - let the Next.js plugin handle it
+  # Explicitly unset publish directory - Next.js plugin handles it
+  # This overrides any UI setting
+  publish = ""
 
 [build.environment]
   NODE_VERSION = "20.19"
