@@ -3,7 +3,7 @@
   # The @netlify/plugin-nextjs handles the publish directory automatically
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "20.19"
   NPM_FLAGS = "--legacy-peer-deps"
 
 # Netlify Next.js plugin - handles routing, serverless functions, and optimizations
