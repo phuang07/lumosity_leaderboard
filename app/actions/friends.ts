@@ -117,6 +117,19 @@ export async function getFriendRequests(userId: string) {
   })
 }
 
+export async function getAllUsers() {
+  return prisma.user.findMany({
+    select: {
+      id: true,
+      username: true,
+      avatarUrl: true,
+    },
+    orderBy: {
+      username: 'asc',
+    },
+  })
+}
+
 export async function compareWithFriend(userId: string, friendId: string) {
   const [userScores, friendScores] = await Promise.all([
     prisma.score.findMany({

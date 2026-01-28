@@ -3,18 +3,64 @@
 import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 
-const MOCK_USER_ID = 'mock-user-id'
+interface User {
+  id: string
+  username: string
+  avatarUrl: string | null
+}
 
 export default function FriendComparePage() {
-  const [selectedFriend, setSelectedFriend] = useState('')
+  const [currentUserId, setCurrentUserId] = useState<string>('')
+  const [currentUsername, setCurrentUsername] = useState<string>('')
+  const [users, setUsers] = useState<User[]>([])
+  const [selectedUserId, setSelectedUserId] = useState('')
+  const [selectedUsername, setSelectedUsername] = useState('')
   const [comparison, setComparison] = useState<any>(null)
   const [loading, setLoading] = useState(false)
+  const [usersLoading, setUsersLoading] = useState(true)
+
+  useEffect(() => {
+    // Get current user
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('/api/auth/current')
+        if (response.ok) {
+          const user = await response.json()
+          if (user) {
+            setCurrentUserId(user.id)
+            setCurrentUsername(user.username)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching current user:', error)
+      }
+    }
+
+    // Fetch all users
+    const fetchUsers = async () => {
+      setUsersLoading(true)
+      try {
+        const response = await fetch('/api/users')
+        if (response.ok) {
+          const allUsers = await response.json()
+          setUsers(allUsers)
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error)
+      } finally {
+        setUsersLoading(false)
+      }
+    }
+
+    fetchCurrentUser()
+    fetchUsers()
+  }, [])
 
   const handleCompare = async () => {
-    if (!selectedFriend) return
+    if (!selectedUserId || !currentUserId) return
     setLoading(true)
     try {
-      const response = await fetch(`/api/friends/compare?userId=${MOCK_USER_ID}&friendId=${selectedFriend}`)
+      const response = await fetch(`/api/friends/compare?userId=${currentUserId}&friendId=${selectedUserId}`)
       const result = await response.json()
       setComparison(result)
     } catch (error) {
@@ -24,26 +70,37 @@ export default function FriendComparePage() {
     }
   }
 
+  const handleUserSelect = (userId: string) => {
+    setSelectedUserId(userId)
+    const selectedUser = users.find(u => u.id === userId)
+    setSelectedUsername(selectedUser?.username || '')
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header username="John Doe" />
+      <Header username={currentUsername || 'User'} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
           <h1 className="text-2xl font-bold mb-4">Compare Scores</h1>
           <div className="flex gap-4">
             <select
-              value={selectedFriend}
-              onChange={(e) => setSelectedFriend(e.target.value)}
-              className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary"
+              value={selectedUserId}
+              onChange={(e) => handleUserSelect(e.target.value)}
+              disabled={usersLoading}
+              className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary disabled:opacity-50"
             >
-              <option value="">Choose a friend...</option>
-              <option value="friend-1">Sarah Miller</option>
-              <option value="friend-2">Mike Johnson</option>
-              <option value="friend-3">Emma Wilson</option>
+              <option value="">Choose a player...</option>
+              {users
+                .filter(user => user.id !== currentUserId)
+                .map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.username}
+                  </option>
+                ))}
             </select>
             <button
               onClick={handleCompare}
-              disabled={!selectedFriend || loading}
+              disabled={!selectedUserId || loading || !currentUserId}
               className="px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50"
             >
               Compare
@@ -61,7 +118,7 @@ export default function FriendComparePage() {
                   <div className="flex justify-between items-center mb-4 pb-4 border-b-2 border-gray-200">
                     <div>
                       <div className="font-semibold mb-1">You</div>
-                      <div className="text-sm text-gray-600">John Doe</div>
+                      <div className="text-sm text-gray-600">{currentUsername || 'You'}</div>
                     </div>
                     <div className="text-4xl font-bold">{comparison.userGamesCount}</div>
                   </div>
@@ -78,8 +135,8 @@ export default function FriendComparePage() {
                 <div className="p-6 bg-gray-50 rounded-lg">
                   <div className="flex justify-between items-center mb-4 pb-4 border-b-2 border-gray-200">
                     <div>
-                      <div className="font-semibold mb-1">Friend</div>
-                      <div className="text-sm text-gray-600">@{selectedFriend}</div>
+                      <div className="font-semibold mb-1">Player</div>
+                      <div className="text-sm text-gray-600">{selectedUsername || 'Selected Player'}</div>
                     </div>
                     <div className="text-4xl font-bold text-danger">{comparison.friendGamesCount}</div>
                   </div>
@@ -128,7 +185,7 @@ export default function FriendComparePage() {
                       <div className={`text-xl font-bold ${comp.friendScore ? 'text-danger' : 'text-gray-400'}`}>
                         {comp.friendScore?.toLocaleString() || '-'}
                       </div>
-                      <div className="text-xs text-gray-600">Friend</div>
+                      <div className="text-xs text-gray-600">Player</div>
                     </div>
                     <div className="text-center">
                       {comp.result === 'win' && (
