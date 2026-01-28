@@ -1,8 +1,6 @@
 [build]
   command = "npm run build"
   # Explicitly unset publish directory - Next.js plugin handles it
-  # This overrides any UI setting
-  publish = ""
 
 [build.environment]
   NODE_VERSION = "20.19"
