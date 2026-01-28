@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  # The @netlify/plugin-nextjs handles the publish directory automatically
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_FLAGS = "--legacy-peer-deps"
+
+# Netlify Next.js plugin - handles routing, serverless functions, and optimizations
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Environment variables are set in Netlify UI
+# Required: DATABASE_URL
