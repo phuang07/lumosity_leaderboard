@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Header from '@/components/Header'
 import StatCard from '@/components/StatCard'
 import ScoreEntryForm from '@/components/ScoreEntryForm'
+import UserChampionsSummary from '@/components/UserChampionsSummary'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/actions/auth'
 
@@ -152,6 +153,11 @@ export default async function DashboardPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* User Champions Summary */}
+        <div className="mb-8">
+          <UserChampionsSummary />
         </div>
 
         {/* Welcome Message for New Users */}

@@ -9,6 +9,64 @@ export async function GET(request: Request) {
     const gameId = searchParams.get('gameId')
     const gameName = searchParams.get('gameName')
     const champions = searchParams.get('champions') === 'true'
+    const userChampions = searchParams.get('userChampions') === 'true'
+
+    // Handle user champions endpoint - aggregates champions by user
+    if (userChampions) {
+      const games = await prisma.game.findMany({
+        include: {
+          scores: {
+            orderBy: { score: 'desc' },
+            take: 1,
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  avatarUrl: true,
+                },
+              },
+            },
+          },
+        },
+      })
+
+      // Aggregate by user
+      const userChampionsMap = new Map<string, {
+        userId: string
+        username: string
+        avatarUrl: string | null
+        gamesLed: number
+        leadingGames: string[]
+      }>()
+
+      games.forEach((game) => {
+        if (game.scores.length > 0) {
+          const topScore = game.scores[0]
+          const userId = topScore.user.id
+
+          if (userChampionsMap.has(userId)) {
+            const existing = userChampionsMap.get(userId)!
+            existing.gamesLed += 1
+            existing.leadingGames.push(game.name)
+          } else {
+            userChampionsMap.set(userId, {
+              userId: topScore.user.id,
+              username: topScore.user.username,
+              avatarUrl: topScore.user.avatarUrl,
+              gamesLed: 1,
+              leadingGames: [game.name],
+            })
+          }
+        }
+      })
+
+      // Convert to array and sort by games led (descending)
+      const userChampionsList = Array.from(userChampionsMap.values())
+        .sort((a, b) => b.gamesLed - a.gamesLed)
+
+      return NextResponse.json(userChampionsList)
+    }
 
     // Handle champions endpoint
     if (champions) {
