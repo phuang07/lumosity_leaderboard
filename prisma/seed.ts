@@ -1,83 +1,65 @@
 import { PrismaClient, GameCategory } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
 import 'dotenv/config'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 
-// Import from lib/prisma.ts which handles Prisma 7 initialization correctly
-// But for seed script, we need to ensure DATABASE_URL is available
-const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/lumosity_leaderboard'
-
-// Set it in process.env so prisma.config.ts can read it
-process.env.DATABASE_URL = connectionString
-
-// Use the same pattern as lib/prisma.ts
+// Use the same pattern as lib/prisma.ts for Prisma 7
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-const prisma = globalForPrisma.prisma ?? new PrismaClient()
+// Prisma 7 requires an adapter for database connections
+const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/lumosity_leaderboard'
+const pool = new Pool({ connectionString })
+const adapter = new PrismaPg(pool)
+
+const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter })
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
-const games = [
-  // Attention Games
-  { name: 'Speed Match', category: GameCategory.ATTENTION, description: 'Match symbols quickly' },
-  { name: 'Train of Thought', category: GameCategory.ATTENTION, description: 'Follow the train' },
-  { name: 'Ebb and Flow', category: GameCategory.ATTENTION, description: 'Track moving objects' },
-  { name: 'Color Match', category: GameCategory.ATTENTION, description: 'Match colors accurately' },
-  { name: 'Lost in Migration', category: GameCategory.ATTENTION, description: 'Follow the migrating birds' },
-  { name: 'Divided Attention', category: GameCategory.ATTENTION, description: 'Focus on multiple tasks' },
-  { name: 'Trouble Brewing', category: GameCategory.ATTENTION, description: 'Monitor multiple stations' },
-  { name: 'Disillusion', category: GameCategory.ATTENTION, description: 'Find the odd one out' },
-  { name: 'Eagle Eye', category: GameCategory.ATTENTION, description: 'Spot the differences' },
-  { name: 'Reflex Ridge', category: GameCategory.ATTENTION, description: 'Quick reaction game' },
-  { name: 'Pet Detective', category: GameCategory.ATTENTION, description: 'Find hidden pets' },
-  { name: 'Spatial Speed Match', category: GameCategory.ATTENTION, description: 'Match spatial patterns' },
+// Read games from JSON file
+function loadGamesFromJSON() {
+  try {
+    const jsonPath = join(process.cwd(), 'data', 'games.json')
+    const fileContent = readFileSync(jsonPath, 'utf-8')
+    const data = JSON.parse(fileContent)
 
-  // Memory Games
-  { name: 'Memory Matrix', category: GameCategory.MEMORY, description: 'Remember grid patterns' },
-  { name: 'Memory Lane', category: GameCategory.MEMORY, description: 'Recall sequences' },
-  { name: 'Memory Match', category: GameCategory.MEMORY, description: 'Match pairs' },
-  { name: 'Word Bubbles', category: GameCategory.MEMORY, description: 'Remember word sequences' },
-  { name: 'Monkey Ladder', category: GameCategory.MEMORY, description: 'Remember sequences' },
-  { name: 'Memory Racer', category: GameCategory.MEMORY, description: 'Race with memory' },
-  { name: 'Memory Match Pro', category: GameCategory.MEMORY, description: 'Advanced matching' },
-  { name: 'Spatial Memory', category: GameCategory.MEMORY, description: 'Remember locations' },
-  { name: 'Working Memory', category: GameCategory.MEMORY, description: 'Hold information' },
-  { name: 'Memory Palace', category: GameCategory.MEMORY, description: 'Build memory palaces' },
+    if (!data.games || !Array.isArray(data.games)) {
+      throw new Error('Invalid JSON structure: expected "games" array')
+    }
 
-  // Flexibility Games
-  { name: 'Word Bubbles Rising', category: GameCategory.FLEXIBILITY, description: 'Flexible word finding' },
-  { name: 'Switching Stations', category: GameCategory.FLEXIBILITY, description: 'Switch between tasks' },
-  { name: 'Task Switching', category: GameCategory.FLEXIBILITY, description: 'Switch mental sets' },
-  { name: 'Brain Shift', category: GameCategory.FLEXIBILITY, description: 'Shift perspectives' },
-  { name: 'Color Match Pro', category: GameCategory.FLEXIBILITY, description: 'Advanced color matching' },
-  { name: 'Mental Flexibility', category: GameCategory.FLEXIBILITY, description: 'Adapt thinking' },
-  { name: 'Set Shifting', category: GameCategory.FLEXIBILITY, description: 'Shift between sets' },
-  { name: 'Cognitive Flexibility', category: GameCategory.FLEXIBILITY, description: 'Flexible thinking' },
+    // Map JSON data to Prisma format, converting category string to enum
+    return data.games.map((game: { name: string; description: string; category: string; icon?: string }) => {
+      // Validate and convert category string to enum
+      const categoryMap: Record<string, GameCategory> = {
+        ATTENTION: GameCategory.ATTENTION,
+        MEMORY: GameCategory.MEMORY,
+        FLEXIBILITY: GameCategory.FLEXIBILITY,
+        SPEED: GameCategory.SPEED,
+        PROBLEM_SOLVING: GameCategory.PROBLEM_SOLVING,
+      }
 
-  // Speed Games
-  { name: 'Speed Match Pro', category: GameCategory.SPEED, description: 'Advanced speed matching' },
-  { name: 'Rush Hour', category: GameCategory.SPEED, description: 'Quick decisions' },
-  { name: 'Speed Processing', category: GameCategory.SPEED, description: 'Process quickly' },
-  { name: 'Rapid Fire', category: GameCategory.SPEED, description: 'Quick responses' },
-  { name: 'Lightning Round', category: GameCategory.SPEED, description: 'Speed challenge' },
-  { name: 'Quick Draw', category: GameCategory.SPEED, description: 'Fast reactions' },
-  { name: 'Speed Test', category: GameCategory.SPEED, description: 'Test your speed' },
-  { name: 'Fast Track', category: GameCategory.SPEED, description: 'Speed track' },
-  { name: 'Velocity', category: GameCategory.SPEED, description: 'High speed game' },
-  { name: 'Turbo Mode', category: GameCategory.SPEED, description: 'Maximum speed' },
+      const category = categoryMap[game.category]
+      if (!category) {
+        throw new Error(`Invalid category "${game.category}" for game "${game.name}". Must be one of: ATTENTION, MEMORY, FLEXIBILITY, SPEED, PROBLEM_SOLVING`)
+      }
 
-  // Problem Solving Games
-  { name: 'Raindrops', category: GameCategory.PROBLEM_SOLVING, description: 'Solve math problems' },
-  { name: 'Rotation Matrix', category: GameCategory.PROBLEM_SOLVING, description: 'Rotate and solve' },
-  { name: 'Problem Solver', category: GameCategory.PROBLEM_SOLVING, description: 'Solve puzzles' },
-  { name: 'Logic Puzzle', category: GameCategory.PROBLEM_SOLVING, description: 'Logical reasoning' },
-  { name: 'Number Crunch', category: GameCategory.PROBLEM_SOLVING, description: 'Number puzzles' },
-  { name: 'Spatial Reasoning', category: GameCategory.PROBLEM_SOLVING, description: 'Spatial puzzles' },
-  { name: 'Pattern Recognition', category: GameCategory.PROBLEM_SOLVING, description: 'Find patterns' },
-  { name: 'Critical Thinking', category: GameCategory.PROBLEM_SOLVING, description: 'Think critically' },
-  { name: 'Analytical Mind', category: GameCategory.PROBLEM_SOLVING, description: 'Analyze problems' },
-  { name: 'Strategic Planning', category: GameCategory.PROBLEM_SOLVING, description: 'Plan strategically' },
-]
+      return {
+        name: game.name,
+        description: game.description,
+        category: category,
+        icon: game.icon || null,
+      }
+    })
+  } catch (error) {
+    console.error('Error loading games from JSON:', error)
+    throw error
+  }
+}
+
+const games = loadGamesFromJSON()
 
 async function main() {
   console.log('Seeding database...')
@@ -86,7 +68,11 @@ async function main() {
   for (const game of games) {
     await prisma.game.upsert({
       where: { name: game.name },
-      update: {},
+      update: {
+        description: game.description,
+        category: game.category,
+        icon: game.icon,
+      },
       create: game,
     })
   }

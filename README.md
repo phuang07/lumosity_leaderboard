@@ -90,9 +90,11 @@ npm run db:generate
 # Push schema to database
 npx prisma db push
 
-# Seed the database with Lumosity games
+# Seed the database with Lumosity games (imports from data/games.json)
 npm run db:seed
 ```
+
+> **Note:** Games are imported from `data/games.json`. To add or update games, edit the JSON file and run `npm run db:seed` again.
 
 ### Start Development Server
 
@@ -128,6 +130,8 @@ lumosity_leaderboard/
 │   ├── e2e/             # Test spec files
 │   ├── fixtures/        # Test data
 │   └── support/         # Custom commands
+├── data/                 # Game data
+│   └── games.json        # Lumosity games catalog (name, description, category, icon)
 ├── lib/                  # Utility functions
 ├── prisma/               # Prisma schema and migrations
 └── designs/             # Static design mockups
@@ -156,7 +160,7 @@ lumosity_leaderboard/
 | `npm run lint` | Run ESLint |
 | `npm run db:generate` | Generate Prisma Client |
 | `npm run db:migrate` | Run database migrations |
-| `npm run db:seed` | Seed database with games |
+| `npm run db:seed` | Seed database with games from `data/games.json` |
 | `npm run cypress` | Open Cypress Test Runner (interactive) |
 | `npm run cypress:run` | Run Cypress tests headlessly |
 | `npm run test:e2e` | Alias for `cypress:run` |
@@ -250,6 +254,23 @@ npm run build
 
 ### Port Already in Use
 The app will automatically use port 3001 if 3000 is busy. Check the terminal output for the actual URL.
+
+## Game Management
+
+Games are managed through `data/games.json`, which contains the complete catalog of Lumosity games. Each game entry includes:
+- **name**: Game name (must be unique)
+- **description**: Game description
+- **category**: One of `ATTENTION`, `MEMORY`, `FLEXIBILITY`, `SPEED`, `PROBLEM_SOLVING`
+- **icon**: Optional path or URL to game icon/screenshot
+
+To add or update games:
+1. Edit `data/games.json`
+2. Run `npm run db:seed` to import the changes
+
+The seed script will:
+- Create new games that don't exist
+- Update existing games (by name) with new descriptions, categories, or icons
+- Validate category values and provide helpful error messages
 
 ## Design
 

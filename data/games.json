@@ -1,0 +1,304 @@
+{
+  "games": [
+    {
+      "name": "Speed Match",
+      "description": "Match symbols quickly to test your processing speed and attention",
+      "category": "ATTENTION",
+      "icon": "/icons/speed-match.png"
+    },
+    {
+      "name": "Train of Thought",
+      "description": "Follow the train and track its path to improve your attention and focus",
+      "category": "ATTENTION",
+      "icon": "/icons/train-of-thought.png"
+    },
+    {
+      "name": "Ebb and Flow",
+      "description": "Track moving objects as they flow across the screen to enhance visual attention",
+      "category": "ATTENTION",
+      "icon": "/icons/ebb-and-flow.png"
+    },
+    {
+      "name": "Color Match",
+      "description": "Match colors accurately to improve your attention to detail",
+      "category": "ATTENTION",
+      "icon": "/icons/color-match.png"
+    },
+    {
+      "name": "Lost in Migration",
+      "description": "Follow the migrating birds and identify the lead bird to train selective attention",
+      "category": "ATTENTION",
+      "icon": "/icons/lost-in-migration.png"
+    },
+    {
+      "name": "Divided Attention",
+      "description": "Focus on multiple tasks simultaneously to improve multitasking abilities",
+      "category": "ATTENTION",
+      "icon": "/icons/divided-attention.png"
+    },
+    {
+      "name": "Trouble Brewing",
+      "description": "Monitor multiple stations and respond quickly to improve sustained attention",
+      "category": "ATTENTION",
+      "icon": "/icons/trouble-brewing.png"
+    },
+    {
+      "name": "Disillusion",
+      "description": "Find the odd one out among similar patterns to enhance visual discrimination",
+      "category": "ATTENTION",
+      "icon": "/icons/disillusion.png"
+    },
+    {
+      "name": "Eagle Eye",
+      "description": "Spot the differences between similar images to sharpen visual attention",
+      "category": "ATTENTION",
+      "icon": "/icons/eagle-eye.png"
+    },
+    {
+      "name": "Reflex Ridge",
+      "description": "Quick reaction game that tests your reflexes and response time",
+      "category": "ATTENTION",
+      "icon": "/icons/reflex-ridge.png"
+    },
+    {
+      "name": "Pet Detective",
+      "description": "Find hidden pets in complex scenes to improve visual search skills",
+      "category": "ATTENTION",
+      "icon": "/icons/pet-detective.png"
+    },
+    {
+      "name": "Spatial Speed Match",
+      "description": "Match spatial patterns quickly to enhance spatial attention and processing speed",
+      "category": "ATTENTION",
+      "icon": "/icons/spatial-speed-match.png"
+    },
+    {
+      "name": "Memory Matrix",
+      "description": "Remember grid patterns and tile locations to challenge your spatial memory",
+      "category": "MEMORY",
+      "icon": "/icons/memory-matrix.png"
+    },
+    {
+      "name": "Memory Lane",
+      "description": "Recall sequences of events and locations to strengthen episodic memory",
+      "category": "MEMORY",
+      "icon": "/icons/memory-lane.png"
+    },
+    {
+      "name": "Memory Match",
+      "description": "Match pairs of cards from memory to improve working memory capacity",
+      "category": "MEMORY",
+      "icon": "/icons/memory-match.png"
+    },
+    {
+      "name": "Word Bubbles",
+      "description": "Remember word sequences and complete phrases to enhance verbal memory",
+      "category": "MEMORY",
+      "icon": "/icons/word-bubbles.png"
+    },
+    {
+      "name": "Monkey Ladder",
+      "description": "Remember sequences of positions to improve sequential memory",
+      "category": "MEMORY",
+      "icon": "/icons/monkey-ladder.png"
+    },
+    {
+      "name": "Memory Racer",
+      "description": "Race with memory by recalling patterns under time pressure",
+      "category": "MEMORY",
+      "icon": "/icons/memory-racer.png"
+    },
+    {
+      "name": "Memory Match Pro",
+      "description": "Advanced matching game with complex patterns to challenge memory skills",
+      "category": "MEMORY",
+      "icon": "/icons/memory-match-pro.png"
+    },
+    {
+      "name": "Spatial Memory",
+      "description": "Remember locations and spatial arrangements to enhance spatial memory",
+      "category": "MEMORY",
+      "icon": "/icons/spatial-memory.png"
+    },
+    {
+      "name": "Working Memory",
+      "description": "Hold information in mind while performing tasks to improve working memory",
+      "category": "MEMORY",
+      "icon": "/icons/working-memory.png"
+    },
+    {
+      "name": "Memory Palace",
+      "description": "Build memory palaces by associating information with locations",
+      "category": "MEMORY",
+      "icon": "/icons/memory-palace.png"
+    },
+    {
+      "name": "Word Bubbles Rising",
+      "description": "Flexible word finding game that challenges cognitive flexibility",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/word-bubbles-rising.png"
+    },
+    {
+      "name": "Switching Stations",
+      "description": "Switch between tasks quickly to improve task-switching abilities",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/switching-stations.png"
+    },
+    {
+      "name": "Task Switching",
+      "description": "Switch mental sets and adapt to changing rules to enhance cognitive flexibility",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/task-switching.png"
+    },
+    {
+      "name": "Brain Shift",
+      "description": "Shift perspectives and adapt to new situations to improve mental flexibility",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/brain-shift.png"
+    },
+    {
+      "name": "Color Match Pro",
+      "description": "Advanced color matching with changing rules to challenge cognitive flexibility",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/color-match-pro.png"
+    },
+    {
+      "name": "Mental Flexibility",
+      "description": "Adapt thinking and switch between different problem-solving approaches",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/mental-flexibility.png"
+    },
+    {
+      "name": "Set Shifting",
+      "description": "Shift between sets and adapt to rule changes to improve flexibility",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/set-shifting.png"
+    },
+    {
+      "name": "Cognitive Flexibility",
+      "description": "Flexible thinking game that challenges you to adapt to changing conditions",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/cognitive-flexibility.png"
+    },
+    {
+      "name": "Speed Match Pro",
+      "description": "Advanced speed matching game that tests rapid information processing",
+      "category": "SPEED",
+      "icon": "/icons/speed-match-pro.png"
+    },
+    {
+      "name": "Rush Hour",
+      "description": "Make quick decisions under time pressure to improve processing speed",
+      "category": "SPEED",
+      "icon": "/icons/rush-hour.png"
+    },
+    {
+      "name": "Speed Processing",
+      "description": "Process information quickly to enhance cognitive processing speed",
+      "category": "SPEED",
+      "icon": "/icons/speed-processing.png"
+    },
+    {
+      "name": "Rapid Fire",
+      "description": "Quick responses to stimuli to improve reaction time and processing speed",
+      "category": "SPEED",
+      "icon": "/icons/rapid-fire.png"
+    },
+    {
+      "name": "Lightning Round",
+      "description": "Speed challenge that tests how quickly you can process and respond",
+      "category": "SPEED",
+      "icon": "/icons/lightning-round.png"
+    },
+    {
+      "name": "Quick Draw",
+      "description": "Fast reactions game that improves response time and decision speed",
+      "category": "SPEED",
+      "icon": "/icons/quick-draw.png"
+    },
+    {
+      "name": "Speed Test",
+      "description": "Test your speed of processing and reaction time with timed challenges",
+      "category": "SPEED",
+      "icon": "/icons/speed-test.png"
+    },
+    {
+      "name": "Fast Track",
+      "description": "Speed track game that challenges rapid information processing",
+      "category": "SPEED",
+      "icon": "/icons/fast-track.png"
+    },
+    {
+      "name": "Velocity",
+      "description": "High speed game that tests maximum processing speed",
+      "category": "SPEED",
+      "icon": "/icons/velocity.png"
+    },
+    {
+      "name": "Turbo Mode",
+      "description": "Maximum speed challenge to push your processing speed to the limit",
+      "category": "SPEED",
+      "icon": "/icons/turbo-mode.png"
+    },
+    {
+      "name": "Raindrops",
+      "description": "Solve math problems quickly as raindrops fall to improve numerical reasoning",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/raindrops.png"
+    },
+    {
+      "name": "Rotation Matrix",
+      "description": "Rotate and solve spatial puzzles to enhance spatial reasoning and problem-solving",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/rotation-matrix.png"
+    },
+    {
+      "name": "Problem Solver",
+      "description": "Solve puzzles and challenges to improve analytical problem-solving skills",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/problem-solver.png"
+    },
+    {
+      "name": "Logic Puzzle",
+      "description": "Logical reasoning game that challenges deductive thinking and problem-solving",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/logic-puzzle.png"
+    },
+    {
+      "name": "Number Crunch",
+      "description": "Number puzzles that improve mathematical reasoning and problem-solving",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/number-crunch.png"
+    },
+    {
+      "name": "Spatial Reasoning",
+      "description": "Spatial puzzles that enhance 3D thinking and spatial problem-solving",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/spatial-reasoning.png"
+    },
+    {
+      "name": "Pattern Recognition",
+      "description": "Find patterns and sequences to improve pattern recognition and problem-solving",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/pattern-recognition.png"
+    },
+    {
+      "name": "Critical Thinking",
+      "description": "Think critically and analyze situations to enhance problem-solving abilities",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/critical-thinking.png"
+    },
+    {
+      "name": "Analytical Mind",
+      "description": "Analyze problems systematically to improve analytical thinking skills",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/analytical-mind.png"
+    },
+    {
+      "name": "Strategic Planning",
+      "description": "Plan strategically and think ahead to improve planning and problem-solving",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/strategic-planning.png"
+    }
+  ]
+}
