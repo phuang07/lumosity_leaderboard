@@ -196,23 +196,23 @@ describe('Score Deletion', () => {
       cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
       cy.reload()
 
-      // Get the game name from the score card
-      cy.get('.bg-gray-50').first().within(() => {
-        cy.get('div').first().invoke('text').then((gameName) => {
-          // Stub window.confirm to return true
-          cy.window().then((win) => {
-            cy.stub(win, 'confirm').returns(true)
-          })
+      // Get the game name from the score card and store it
+      cy.get('.bg-gray-50').first().find('div').first().invoke('text').then((gameName) => {
+        const trimmedName = gameName.trim()
 
-          // Click delete button
-          cy.get('[title="Delete score"]').click()
-
-          // Wait for deletion
-          cy.wait(1000)
-
-          // Verify the score is no longer in the list
-          cy.get('body').should('not.contain', gameName.trim())
+        // Stub window.confirm to return true
+        cy.window().then((win) => {
+          cy.stub(win, 'confirm').returns(true)
         })
+
+        // Click delete button on the first score card
+        cy.get('.bg-gray-50').first().find('[title="Delete score"]').click()
+
+        // Wait for deletion to complete
+        cy.wait(1000)
+
+        // Verify the score is no longer in the list (check against page body, not within deleted element)
+        cy.get('body').should('not.contain', trimmedName)
       })
     })
   })
