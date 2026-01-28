@@ -143,6 +143,45 @@ async function checkAchievements(userId: string) {
   }
 }
 
+export async function deleteScore(userId: string, scoreId: string) {
+  try {
+    // Verify the score belongs to the user (security check)
+    const score = await prisma.score.findUnique({
+      where: { id: scoreId },
+    })
+
+    if (!score) {
+      return { success: false, message: 'Score not found' }
+    }
+
+    if (score.userId !== userId) {
+      return { success: false, message: 'Unauthorized: You can only delete your own scores' }
+    }
+
+    // Delete the score
+    await prisma.score.delete({
+      where: { id: scoreId },
+    })
+
+    // Update user stats
+    await updateUserStats(userId)
+
+    // Recheck achievements (will add new ones if conditions are met)
+    // Note: This doesn't remove achievements if user no longer qualifies
+    await checkAchievements(userId)
+
+    // Revalidate paths
+    revalidatePath('/dashboard')
+    revalidatePath('/leaderboard')
+    revalidatePath('/score-entry')
+
+    return { success: true, message: 'Score deleted successfully' }
+  } catch (error) {
+    console.error('Error deleting score:', error)
+    return { success: false, message: 'Failed to delete score' }
+  }
+}
+
 export async function getUserScores(userId: string) {
   return prisma.score.findMany({
     where: { userId },
