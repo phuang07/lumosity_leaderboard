@@ -44,9 +44,11 @@ cd lumosity_leaderboard
 npm install
 ```
 
-### Database Setup
+### Environment Configuration
 
-Create a `.env` file in the root directory with your database connection string.
+**📖 See [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) for detailed environment configuration guide.**
+
+Create a `.env.local` file in the root directory with your database connection string.
 
 #### Option A: Docker PostgreSQL (Easiest)
 
@@ -54,13 +56,14 @@ Create a `.env` file in the root directory with your database connection string.
 # Start PostgreSQL in Docker
 docker-compose up -d
 
-# Use this connection string in .env:
+# Use this connection string in .env.local:
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/lumosity_leaderboard"
 ```
 
 #### Option B: Local PostgreSQL
 
 ```bash
+# Add to .env.local:
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/lumosity_leaderboard"
 ```
 

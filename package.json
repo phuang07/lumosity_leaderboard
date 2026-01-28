@@ -15,7 +15,13 @@
     "cypress": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "cypress run",
-    "test:e2e:headed": "cypress run --headed"
+    "test:e2e:headed": "cypress run --headed",
+    "clean": "rm -rf .next",
+    "clean:next": "rm -rf .next",
+    "clean:prisma": "rm -rf node_modules/.prisma node_modules/@prisma/client",
+    "clean:ts": "find . -name '*.tsbuildinfo' -delete",
+    "clean:all": "rm -rf .next node_modules package-lock.json *.tsbuildinfo && npm install",
+    "clean:install": "rm -rf node_modules package-lock.json && npm install"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.3.0",

@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { config } from '@/lib/config'
 import { cookies } from 'next/headers'
 import crypto from 'crypto'
 
@@ -72,9 +73,9 @@ export async function registerUser(formData: FormData): Promise<AuthResult> {
     const cookieStore = await cookies()
     cookieStore.set('userId', user.id, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+      secure: config.security.cookieSecure,
+      sameSite: config.security.cookieSameSite,
+      maxAge: config.security.cookieMaxAge,
     })
 
     return { success: true }
@@ -117,9 +118,9 @@ export async function loginUser(formData: FormData): Promise<AuthResult> {
     const cookieStore = await cookies()
     cookieStore.set('userId', user.id, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+      secure: config.security.cookieSecure,
+      sameSite: config.security.cookieSameSite,
+      maxAge: config.security.cookieMaxAge,
     })
 
     return { success: true }

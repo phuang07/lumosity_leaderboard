@@ -4,6 +4,7 @@ import { Pool } from 'pg'
 import 'dotenv/config'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import { config } from '../lib/config'
 
 // Use the same pattern as lib/prisma.ts for Prisma 7
 const globalForPrisma = globalThis as unknown as {
@@ -11,13 +12,13 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 // Prisma 7 requires an adapter for database connections
-const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/lumosity_leaderboard'
+const connectionString = config.database.url
 const pool = new Pool({ connectionString })
 const adapter = new PrismaPg(pool)
 
 const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter })
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+if (!config.env.isProduction) globalForPrisma.prisma = prisma
 
 // Read games from JSON file
 function loadGamesFromJSON() {
