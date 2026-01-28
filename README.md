@@ -1,7 +1,8 @@
 # Lumosity Leaderboard
 
-[![CI - Cypress Tests](https://github.com/YOUR_USERNAME/lumosity_leaderboard/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/lumosity_leaderboard/actions/workflows/ci.yml)
+[![CI - Cypress Tests](https://github.com/phuang07/lumosity_leaderboard/actions/workflows/ci.yml/badge.svg)](https://github.com/phuang07/lumosity_leaderboard/actions/workflows/ci.yml)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/96e0e14e-a42c-40c8-9f9d-40379a26680e/deploy-status)](https://app.netlify.com/projects/lumosity/deploys)
+[![Neon Database](https://img.shields.io/badge/Neon-Database-00E5FF?logo=neon&logoColor=white)](https://console.neon.tech/app/projects/super-art-60763048)
 
 A web application for comparing Lumosity game scores with friends, featuring rankings, friend comparisons, and gamification elements.
 
