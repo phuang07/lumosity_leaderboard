@@ -110,11 +110,14 @@ export default function LeaderboardPage() {
                 style={{ width: '200px' }}
               >
                 <option value="all">All Games</option>
-                {gamesData.games.map((game) => (
-                  <option key={game.name} value={game.name}>
-                    {game.name}
-                  </option>
-                ))}
+                {gamesData.games
+                  .slice()
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((game) => (
+                    <option key={game.name} value={game.name}>
+                      {game.name}
+                    </option>
+                  ))}
               </select>
             </div>
           </div>
