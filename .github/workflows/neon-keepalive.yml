@@ -18,7 +18,19 @@ jobs:
   keepalive:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Neon database
+      - name: Check for database URL
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client > /dev/null
-          psql "${{ secrets.NEON_DATABASE_URL }}" -c "SELECT 1 AS ok;" --no-password
+          if [ -z "$NEON_DATABASE_URL" ]; then
+            echo "::error::NEON_DATABASE_URL secret is not set. Please add it under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client > /dev/null
+
+      - name: Ping Neon database
+        run: psql "$NEON_DATABASE_URL" -c "SELECT 1 AS ok;" --no-password
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
