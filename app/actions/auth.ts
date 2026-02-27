@@ -89,12 +89,12 @@ export async function registerUser(formData: FormData): Promise<AuthResult> {
 }
 
 export async function loginUser(formData: FormData): Promise<AuthResult> {
-  const email = formData.get('email') as string
+  const loginIdentifier = ((formData.get('identifier') ?? formData.get('email')) as string | null)?.trim() || ''
   const password = formData.get('password') as string
 
   // Validation
-  if (!email || !email.includes('@')) {
-    return { success: false, error: 'Please enter a valid email address' }
+  if (!loginIdentifier) {
+    return { success: false, error: 'Please enter your username or email' }
   }
 
   if (!password) {
@@ -102,10 +102,16 @@ export async function loginUser(formData: FormData): Promise<AuthResult> {
   }
 
   try {
-    // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() }
+    // Prefer exact email match first, then fall back to username.
+    let user = await prisma.user.findUnique({
+      where: { email: loginIdentifier.toLowerCase() }
     })
+
+    if (!user) {
+      user = await prisma.user.findUnique({
+        where: { username: loginIdentifier }
+      })
+    }
 
     if (!user) {
       return { success: false, error: 'Invalid email or password' }
