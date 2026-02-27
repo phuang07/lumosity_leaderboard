@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npm run db:seed && npm run build"
   # Explicitly unset publish directory - Next.js plugin handles it
 
 [build.environment]
