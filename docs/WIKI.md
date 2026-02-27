@@ -213,6 +213,14 @@ DATABASE_URL="postgresql://postgres:postgres@localhost:5432/lumosity_leaderboard
 NODE_ENV=development
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 AUTH_SECRET=your-secret-key
+
+# SMTP (required for forgot password in production)
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your-smtp-username
+SMTP_PASS=your-smtp-password
+SMTP_FROM="Lumosity <noreply@yourdomain.com>"
+# SMTP_SECURE=true  # Use for port 465
 ```
 
 ### Environment File Priority
@@ -275,8 +283,14 @@ config.security.cookieSecure    // true in production
 4. Add:
    - **Key:** `DATABASE_URL`
    - **Value:** Your cloud database connection string
-5. Click **"Save"**
-6. Go to **Deploys** → **"Trigger deploy"** → **"Clear cache and deploy site"**
+5. For forgot password emails, add SMTP variables:
+   - `SMTP_HOST` - Your SMTP server (e.g. `smtp.sendgrid.net`, `smtp.mailgun.org`)
+   - `SMTP_PORT` - Usually `587` (TLS) or `465` (SSL)
+   - `SMTP_USER` - SMTP username
+   - `SMTP_PASS` - SMTP password
+   - `SMTP_FROM` - Sender address (e.g. `"Lumosity <noreply@yourdomain.com>"`)
+6. Click **"Save"**
+7. Go to **Deploys** → **"Trigger deploy"** → **"Clear cache and deploy site"**
 
 **Method 2: Netlify CLI**
 

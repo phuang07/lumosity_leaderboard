@@ -67,6 +67,21 @@ export const config = {
     level: process.env.LOG_LEVEL || (isDevelopment ? 'debug' : 'info'),
     enableConsole: isDevelopment,
   },
+
+  // SMTP (for password reset emails in production)
+  smtp: {
+    host: process.env.SMTP_HOST || '',
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || '',
+    from: process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@localhost',
+    secure: process.env.SMTP_SECURE === 'true',
+    isConfigured: !!(
+      process.env.SMTP_HOST &&
+      process.env.SMTP_USER &&
+      process.env.SMTP_PASS
+    ),
+  },
 } as const
 
 /**
@@ -82,6 +97,10 @@ export function validateConfig() {
 
   if (isProduction && !process.env.NEXT_PUBLIC_APP_URL) {
     console.warn('Warning: NEXT_PUBLIC_APP_URL is not set in production')
+  }
+
+  if (isProduction && !config.smtp.isConfigured) {
+    console.warn('Warning: SMTP is not configured. Forgot password emails will not be sent. Set SMTP_HOST, SMTP_USER, SMTP_PASS.')
   }
 
   if (errors.length > 0) {

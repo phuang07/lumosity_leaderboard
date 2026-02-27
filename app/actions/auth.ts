@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { config } from '@/lib/config'
+import { sendPasswordResetEmail } from '@/lib/email'
 import { cookies } from 'next/headers'
 import crypto from 'crypto'
 
@@ -214,17 +215,25 @@ export async function requestPasswordReset(formData: FormData): Promise<RequestP
     const appUrl = config.app.url || 'http://localhost:3000'
     const resetLink = `${appUrl}/reset-password?token=${token}`
 
-    // In development without email config, return the link for testing
-    const isDev = config.env.isDevelopment
-    if (isDev) {
-      console.log('[Password Reset] Dev mode - reset link:', resetLink)
+    // Send email when SMTP is configured (production)
+    if (config.smtp.isConfigured) {
+      const emailResult = await sendPasswordResetEmail(user.email, resetLink)
+      if (!emailResult.success) {
+        console.error('[Password Reset] Email failed:', emailResult.error)
+        return { success: false, error: 'Failed to send reset email. Please try again later.' }
+      }
+      return { success: true }
+    }
+
+    // In development without SMTP, return the link for testing
+    if (config.env.isDevelopment) {
+      console.log('[Password Reset] Dev mode (no SMTP) - reset link:', resetLink)
       return { success: true, resetLink }
     }
 
-    // TODO: Integrate email service (e.g. Resend, SendGrid, nodemailer) for production
-    // For now in production without email, log the link (admin can manually share)
-    console.log('[Password Reset] Token created for', email, '- configure email for production')
-    return { success: true }
+    // Production without SMTP configured
+    console.error('[Password Reset] SMTP not configured - cannot send reset email to', email)
+    return { success: false, error: 'Email service is not configured. Please contact support.' }
   } catch (error) {
     console.error('Password reset request error:', error)
     return { success: false, error: 'An error occurred. Please try again.' }
