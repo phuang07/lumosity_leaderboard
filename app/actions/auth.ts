@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { config } from '@/lib/config'
 import { sendPasswordResetEmail } from '@/lib/email'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import crypto from 'crypto'
 
 // Simple password hashing (for demo purposes - use bcrypt in production)
@@ -212,7 +212,18 @@ export async function requestPasswordReset(formData: FormData): Promise<RequestP
       }
     })
 
-    const appUrl = config.app.url || 'http://localhost:3000'
+    // Use request origin when available (correct port for dev/E2E), else config
+    let appUrl = config.app.url || 'http://localhost:3000'
+    try {
+      const headersList = await headers()
+      const host = headersList.get('x-forwarded-host') || headersList.get('host')
+      const proto = headersList.get('x-forwarded-proto') || (config.security.cookieSecure ? 'https' : 'http')
+      if (host) {
+        appUrl = `${proto}://${host}`
+      }
+    } catch {
+      // headers() may throw in some edge cases
+    }
     const resetLink = `${appUrl}/reset-password?token=${token}`
 
     // Send email when SMTP is configured (production)
