@@ -73,6 +73,7 @@ jobs:
           wait-on-timeout: 120
           browser: chrome
         env:
+          NODE_ENV: test
           DATABASE_URL: ${{ env.DATABASE_URL }}
           AUTH_SECRET: ${{ env.AUTH_SECRET }}
 
