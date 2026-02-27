@@ -68,6 +68,9 @@ export const config = {
     enableConsole: isDevelopment,
   },
 
+  // E2E: when set, forgot-password returns reset link in response (no email) for Cypress
+  e2ePasswordResetLink: process.env.E2E_PASSWORD_RESET_LINK === 'true',
+
   // SMTP (for password reset emails in production)
   smtp: {
     host: process.env.SMTP_HOST || '',

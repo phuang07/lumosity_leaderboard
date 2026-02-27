@@ -236,9 +236,9 @@ export async function requestPasswordReset(formData: FormData): Promise<RequestP
       return { success: true }
     }
 
-    // In development or test (E2E) without SMTP, return the link for testing
-    if (config.env.isDevelopment || config.env.isTest) {
-      console.log('[Password Reset] Dev/test mode (no SMTP) - reset link:', resetLink)
+    // In development, or when E2E_PASSWORD_RESET_LINK=true (CI), return the link for testing
+    if (config.env.isDevelopment || config.e2ePasswordResetLink) {
+      console.log('[Password Reset] Dev/E2E mode (no SMTP) - reset link:', resetLink)
       return { success: true, resetLink }
     }
 
