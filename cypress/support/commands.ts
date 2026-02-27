@@ -10,8 +10,9 @@ declare global {
       /**
        * Custom command to login via the UI
        * @example cy.login('test@example.com', 'password123')
+       * @example cy.login('testuser', 'password123')
        */
-      login(email: string, password: string): Chainable<void>
+      login(identifier: string, password: string): Chainable<void>
       
       /**
        * Custom command to register a new user via the UI
@@ -29,9 +30,9 @@ declare global {
 }
 
 // Login command
-Cypress.Commands.add('login', (email: string, password: string) => {
+Cypress.Commands.add('login', (identifier: string, password: string) => {
   cy.visit('/login')
-  cy.get('input[name="email"]').type(email)
+  cy.get('input[name="email"]').type(identifier)
   cy.get('input[name="password"]').type(password)
   cy.get('button[type="submit"]').click()
 })

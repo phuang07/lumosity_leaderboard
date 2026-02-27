@@ -51,12 +51,11 @@ describe('User Login', () => {
   })
 
   describe('Login Validation', () => {
-    it('should show error for invalid email format', () => {
-      cy.get('input[name="email"]').type('invalidemail')
+    it('should show validation error for empty username/email', () => {
       cy.get('input[name="password"]').type('somepassword')
       cy.get('button[type="submit"]').click()
       
-      // Browser validation should prevent submission or show error
+      // Browser validation should prevent submission
       cy.get('input[name="email"]:invalid').should('exist')
     })
 
@@ -75,7 +74,7 @@ describe('User Login', () => {
       cy.get('button[type="submit"]').click()
       
       // Should show error message
-      cy.contains('Invalid email or password').should('be.visible')
+      cy.contains('Invalid username/email or password').should('be.visible')
       
       // Should stay on login page
       cy.url().should('include', '/login')
@@ -87,13 +86,25 @@ describe('User Login', () => {
       cy.get('button[type="submit"]').click()
       
       // Should show error message
-      cy.contains('Invalid email or password').should('be.visible')
+      cy.contains('Invalid username/email or password').should('be.visible')
     })
   })
 
   describe('Successful Login', () => {
     it('should login successfully with valid credentials', () => {
       cy.get('input[name="email"]').type(testUser.email)
+      cy.get('input[name="password"]').type(testUser.password)
+      cy.get('button[type="submit"]').click()
+      
+      // Should redirect to dashboard
+      cy.url().should('include', '/dashboard')
+      
+      // Should show the username in the header
+      cy.contains(testUser.username).should('be.visible')
+    })
+
+    it('should login successfully with username and password', () => {
+      cy.get('input[name="email"]').type(testUser.username)
       cy.get('input[name="password"]').type(testUser.password)
       cy.get('button[type="submit"]').click()
       
