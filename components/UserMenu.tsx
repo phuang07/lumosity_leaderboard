@@ -6,9 +6,10 @@ import { logoutUser } from '@/app/actions/auth'
 
 interface UserMenuProps {
   username: string
+  role?: 'ADMIN' | 'MEMBER'
 }
 
-export default function UserMenu({ username }: UserMenuProps) {
+export default function UserMenu({ username, role = 'MEMBER' }: UserMenuProps) {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -86,6 +87,18 @@ export default function UserMenu({ username }: UserMenuProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               Add Score
+            </span>
+          </a>
+
+          <a
+            href="/user-management"
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <span className="flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A10.964 10.964 0 0112 15c2.49 0 4.785.83 6.621 2.231M15 7a3 3 0 11-6 0 3 3 0 016 0zM12 3a9 9 0 100 18 9 9 0 000-18z" />
+              </svg>
+              {role === 'ADMIN' ? 'Manage Users' : 'Profile Settings'}
             </span>
           </a>
           

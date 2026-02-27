@@ -34,6 +34,8 @@ export async function registerUser(formData: FormData): Promise<AuthResult> {
   }
 
   try {
+    const userCount = await prisma.user.count()
+
     // Check if user already exists
     const existingUser = await prisma.user.findFirst({
       where: {
@@ -56,6 +58,7 @@ export async function registerUser(formData: FormData): Promise<AuthResult> {
       data: {
         email: email.toLowerCase(),
         username,
+        role: userCount === 0 ? 'ADMIN' : 'MEMBER',
         passwordHash: hashPassword(password),
       }
     })
@@ -150,6 +153,7 @@ export async function getCurrentUser() {
         id: true,
         email: true,
         username: true,
+        role: true,
         avatarUrl: true,
         createdAt: true,
       }
