@@ -74,7 +74,7 @@ describe('User Login', () => {
       cy.get('button[type="submit"]').click()
       
       // Should show error message
-      cy.contains('Invalid username/email or password').should('be.visible')
+      cy.contains('Invalid email or password').should('be.visible')
       
       // Should stay on login page
       cy.url().should('include', '/login')
@@ -86,7 +86,7 @@ describe('User Login', () => {
       cy.get('button[type="submit"]').click()
       
       // Should show error message
-      cy.contains('Invalid username/email or password').should('be.visible')
+      cy.contains('Invalid email or password').should('be.visible')
     })
   })
 

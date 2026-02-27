@@ -53,7 +53,7 @@ describe('User Management with Roles', () => {
     cy.clearCookies()
     cy.login(memberUser.email, memberUser.password)
     cy.url().should('include', '/login')
-    cy.contains('Invalid username/email or password').should('be.visible')
+    cy.contains('Invalid email or password').should('be.visible')
 
     cy.login(memberUser.email, memberSelfUpdatedPassword)
     cy.url().should('include', '/dashboard')
@@ -77,7 +77,7 @@ describe('User Management with Roles', () => {
     cy.clearCookies()
     cy.login(memberUser.email, memberSelfUpdatedPassword)
     cy.url().should('include', '/login')
-    cy.contains('Invalid username/email or password').should('be.visible')
+    cy.contains('Invalid email or password').should('be.visible')
 
     cy.login(memberUser.email, memberAdminUpdatedPassword)
     cy.url().should('include', '/dashboard')

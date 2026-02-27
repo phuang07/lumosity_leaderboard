@@ -114,13 +114,13 @@ export async function loginUser(formData: FormData): Promise<AuthResult> {
     }
 
     if (!user) {
-      return { success: false, error: 'Invalid username/email or password' }
+      return { success: false, error: 'Invalid email or password' }
     }
 
     // Check password
     const passwordHash = hashPassword(password)
     if (user.passwordHash !== passwordHash) {
-      return { success: false, error: 'Invalid username/email or password' }
+      return { success: false, error: 'Invalid email or password' }
     }
 
     // Set session cookie
