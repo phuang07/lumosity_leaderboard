@@ -1,16 +1,16 @@
 /// <reference types="cypress" />
 
 describe('User Management with Roles', () => {
-  const runId = Date.now()
+  const runId = Date.now().toString().slice(-6)
 
   const adminUser = {
-    username: `admin_${runId}`,
+    username: `adm_${runId}`,
     email: `admin_${runId}@example.com`,
     password: 'testpassword123',
   }
 
   const memberUser = {
-    username: `member_${runId}`,
+    username: `mem_${runId}`,
     email: `member_${runId}@example.com`,
     password: 'testpassword123',
   }
