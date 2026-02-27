@@ -1,5 +1,6 @@
 'use server'
 
+import crypto from 'crypto'
 import { UserRole } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
@@ -12,7 +13,12 @@ const updateUserSchema = z.object({
   email: z.string().trim().email('Please provide a valid email address'),
   avatarUrl: z.string().trim().optional(),
   role: z.nativeEnum(UserRole).optional(),
+  password: z.string().min(6, 'Password must be at least 6 characters').optional(),
 })
+
+function hashPassword(password: string): string {
+  return crypto.createHash('sha256').update(password).digest('hex')
+}
 
 export type UpdateUserInput = z.infer<typeof updateUserSchema>
 
@@ -114,6 +120,7 @@ export async function updateUser(input: UpdateUserInput): Promise<UpdateUserResu
         email: normalizedEmail,
         avatarUrl: normalizedAvatarUrl.length > 0 ? normalizedAvatarUrl : null,
         ...(isAdmin && parsed.data.role ? { role: parsed.data.role } : {}),
+        ...(parsed.data.password ? { passwordHash: hashPassword(parsed.data.password) } : {}),
       },
       select: {
         id: true,
