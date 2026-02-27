@@ -299,6 +299,24 @@
       "description": "Plan strategically and think ahead to improve planning and problem-solving",
       "category": "PROBLEM_SOLVING",
       "icon": "/icons/strategic-planning.png"
+    },
+    {
+      "name": "Chalkboard Challenge",
+      "description": "Improve quantitative reasoning and numerical estimation for better problem-solving and financial decisions",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/chalkboard-challenge.png"
+    },
+    {
+      "name": "Splitting Seeds",
+      "description": "Quickly divide seeds equally between birds to exercise processing speed and visual estimation through subitizing",
+      "category": "SPEED",
+      "icon": "/icons/splitting-seeds.png"
+    },
+    {
+      "name": "Playing Koi",
+      "description": "Feed fish while tracking which ones you have fed to train divided attention and multiple object tracking",
+      "category": "ATTENTION",
+      "icon": "/icons/playing-koi.png"
     }
   ]
 }
