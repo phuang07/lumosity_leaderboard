@@ -170,3 +170,107 @@ export async function getCurrentUser() {
     return null
   }
 }
+
+export type RequestPasswordResetResult = {
+  success: boolean
+  error?: string
+  /** In development, the reset link is returned for testing (no email sent) */
+  resetLink?: string
+}
+
+export async function requestPasswordReset(formData: FormData): Promise<RequestPasswordResetResult> {
+  const email = (formData.get('email') as string)?.trim()?.toLowerCase()
+
+  if (!email || !email.includes('@')) {
+    return { success: false, error: 'Please enter a valid email address' }
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email }
+    })
+
+    // Always return success to prevent email enumeration
+    if (!user) {
+      return { success: true }
+    }
+
+    // Invalidate any existing tokens for this user
+    await prisma.passwordResetToken.deleteMany({
+      where: { userId: user.id }
+    })
+
+    const token = crypto.randomBytes(32).toString('hex')
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+
+    await prisma.passwordResetToken.create({
+      data: {
+        token,
+        userId: user.id,
+        expiresAt,
+      }
+    })
+
+    const appUrl = config.app.url || 'http://localhost:3000'
+    const resetLink = `${appUrl}/reset-password?token=${token}`
+
+    // In development without email config, return the link for testing
+    const isDev = config.env.isDevelopment
+    if (isDev) {
+      console.log('[Password Reset] Dev mode - reset link:', resetLink)
+      return { success: true, resetLink }
+    }
+
+    // TODO: Integrate email service (e.g. Resend, SendGrid, nodemailer) for production
+    // For now in production without email, log the link (admin can manually share)
+    console.log('[Password Reset] Token created for', email, '- configure email for production')
+    return { success: true }
+  } catch (error) {
+    console.error('Password reset request error:', error)
+    return { success: false, error: 'An error occurred. Please try again.' }
+  }
+}
+
+export type ResetPasswordResult = {
+  success: boolean
+  error?: string
+}
+
+export async function resetPassword(formData: FormData): Promise<ResetPasswordResult> {
+  const token = (formData.get('token') as string)?.trim()
+  const password = formData.get('password') as string
+
+  if (!token) {
+    return { success: false, error: 'Invalid or expired reset link' }
+  }
+
+  if (!password || password.length < 6) {
+    return { success: false, error: 'Password must be at least 6 characters' }
+  }
+
+  try {
+    const resetToken = await prisma.passwordResetToken.findUnique({
+      where: { token },
+      include: { user: true }
+    })
+
+    if (!resetToken || resetToken.expiresAt < new Date()) {
+      return { success: false, error: 'Invalid or expired reset link. Please request a new one.' }
+    }
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: resetToken.userId },
+        data: { passwordHash: hashPassword(password) }
+      }),
+      prisma.passwordResetToken.delete({
+        where: { id: resetToken.id }
+      })
+    ])
+
+    return { success: true }
+  } catch (error) {
+    console.error('Password reset error:', error)
+    return { success: false, error: 'An error occurred. Please try again.' }
+  }
+}

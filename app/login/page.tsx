@@ -68,9 +68,9 @@ export default function LoginPage() {
                 disabled={isPending}
               />
               <div className="text-right mt-2">
-                <a href="#" className="text-primary text-sm hover:underline">
+                <Link href="/forgot-password" className="text-primary text-sm hover:underline">
                   Forgot password?
-                </a>
+                </Link>
               </div>
             </div>
 
