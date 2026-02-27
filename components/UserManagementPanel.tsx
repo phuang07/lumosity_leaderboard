@@ -20,6 +20,7 @@ type EditableManagedUser = {
   email: string
   avatarUrl: string
   role: Role
+  newPassword: string
 }
 
 type MessageState = {
@@ -36,6 +37,7 @@ function normalizeUserForForm(user: ManagedUser): EditableManagedUser {
   return {
     ...user,
     avatarUrl: user.avatarUrl || '',
+    newPassword: '',
   }
 }
 
@@ -67,6 +69,7 @@ export default function UserManagementPanel({ currentUser, users }: UserManageme
         username: profileForm.username,
         email: profileForm.email,
         avatarUrl: profileForm.avatarUrl,
+        ...(profileForm.newPassword.length > 0 ? { password: profileForm.newPassword } : {}),
       })
 
       if (!result.success || !result.updatedUser) {
@@ -91,7 +94,7 @@ export default function UserManagementPanel({ currentUser, users }: UserManageme
 
   const handleAdminFieldChange = (
     userId: string,
-    field: 'username' | 'email' | 'avatarUrl' | 'role',
+    field: 'username' | 'email' | 'avatarUrl' | 'role' | 'newPassword',
     value: string
   ) => {
     setAdminUsers((prev) =>
@@ -126,6 +129,7 @@ export default function UserManagementPanel({ currentUser, users }: UserManageme
         email: targetUser.email,
         avatarUrl: targetUser.avatarUrl,
         role: targetUser.role,
+        ...(targetUser.newPassword.length > 0 ? { password: targetUser.newPassword } : {}),
       })
 
       if (!result.success || !result.updatedUser) {
@@ -166,7 +170,7 @@ export default function UserManagementPanel({ currentUser, users }: UserManageme
         <div className="mb-4">
           <h1 className="text-2xl font-bold">User Profile</h1>
           <p className="text-sm text-gray-600 mt-1">
-            Update your account information.
+            Update your account information, including password changes.
           </p>
         </div>
 
@@ -213,6 +217,21 @@ export default function UserManagementPanel({ currentUser, users }: UserManageme
           </div>
 
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">New Password (optional)</label>
+            <input
+              data-cy="profile-password-input"
+              type="password"
+              value={profileForm.newPassword}
+              onChange={(event) => setProfileForm((prev) => ({ ...prev, newPassword: event.target.value }))}
+              className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary"
+              placeholder="Enter a new password"
+              minLength={6}
+              autoComplete="new-password"
+              disabled={isProfilePending}
+            />
+          </div>
+
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
             <input
               data-cy="profile-role-input"
@@ -252,7 +271,7 @@ export default function UserManagementPanel({ currentUser, users }: UserManageme
           <div className="mb-4">
             <h2 className="text-xl font-semibold">Admin User Management</h2>
             <p className="text-sm text-gray-600 mt-1">
-              As an admin, you can edit any user profile and update roles.
+              As an admin, you can edit any user profile, update roles, and change passwords.
             </p>
           </div>
 
@@ -305,6 +324,21 @@ export default function UserManagementPanel({ currentUser, users }: UserManageme
                         onChange={(event) => handleAdminFieldChange(user.id, 'avatarUrl', event.target.value)}
                         className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary"
                         placeholder="https://example.com/avatar.png"
+                        disabled={isSavingThisUser}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                      <input
+                        data-cy={`admin-password-input-${user.id}`}
+                        type="password"
+                        value={user.newPassword}
+                        onChange={(event) => handleAdminFieldChange(user.id, 'newPassword', event.target.value)}
+                        className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary"
+                        placeholder="Leave blank to keep current password"
+                        minLength={6}
+                        autoComplete="new-password"
                         disabled={isSavingThisUser}
                       />
                     </div>
