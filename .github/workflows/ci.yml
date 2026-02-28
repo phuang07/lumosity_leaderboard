@@ -74,6 +74,8 @@ jobs:
           wait-on-timeout: 120
           browser: chrome
         env:
+          E2E_PASSWORD_RESET_LINK: "true"
+          NEXT_PUBLIC_APP_URL: http://localhost:3001
           DATABASE_URL: ${{ env.DATABASE_URL }}
           AUTH_SECRET: ${{ env.AUTH_SECRET }}
 
