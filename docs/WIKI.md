@@ -23,6 +23,7 @@ A comprehensive guide for the Lumosity Leaderboard application.
 7. [Troubleshooting](#troubleshooting)
    - [Database Connection Issues](#database-connection-issues)
    - [Environment Variable Issues](#environment-variable-issues)
+   - [Password Reset / SMTP Issues](#password-reset--smtp-issues)
    - [Netlify Build Issues](#netlify-build-issues)
    - [Cache Clearing](#cache-clearing)
 8. [Project Structure](#project-structure)
@@ -222,6 +223,27 @@ SMTP_PASS=your-smtp-password
 SMTP_FROM="Lumosity <noreply@yourdomain.com>"
 # SMTP_SECURE=true  # Use for port 465
 ```
+
+#### Google SMTP (Gmail)
+
+To use Gmail for password reset emails:
+
+1. **Enable 2-Step Verification** on your Google account: [Google Account Security](https://myaccount.google.com/security)
+2. **Create an App Password** (not your regular Gmail password):
+   - Go to [Google App Passwords](https://myaccount.google.com/apppasswords)
+   - Select "Mail" and your device, then generate
+   - Use the 16-character password in `SMTP_PASS`
+3. **Configure `.env.local`**:
+
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-16-char-app-password
+SMTP_FROM="Lumosity <your-email@gmail.com>"
+```
+
+> **Note:** Do not use your regular Gmail password. Google requires an [App Password](https://support.google.com/accounts/answer/185833) when using SMTP.
 
 ### Environment File Priority
 
@@ -427,6 +449,20 @@ npm run dev
 
 1. Verify variables in **Site Settings** → **Environment Variables**
 2. Go to **Deploys** → **Trigger deploy** → **"Clear cache and deploy site"**
+
+---
+
+### Password Reset / SMTP Issues
+
+**Symptoms:** "An error occurred. Please try again." or "Failed to send reset email" when requesting a password reset.
+
+**For Google SMTP (Gmail):**
+1. Use an [App Password](https://support.google.com/accounts/answer/185833), not your regular Gmail password
+2. Enable 2-Step Verification on your Google account first
+3. Set `SMTP_HOST=smtp.gmail.com` and `SMTP_PORT=587`
+4. In development, the app shows the actual error message to help debug—check the form for details
+
+**For other SMTP providers:** Ensure `SMTP_HOST`, `SMTP_USER`, and `SMTP_PASS` are set correctly. Use port 587 for TLS or 465 for SSL (with `SMTP_SECURE=true`).
 
 ---
 

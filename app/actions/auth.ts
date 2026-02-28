@@ -231,7 +231,12 @@ export async function requestPasswordReset(formData: FormData): Promise<RequestP
       const emailResult = await sendPasswordResetEmail(user.email, resetLink)
       if (!emailResult.success) {
         console.error('[Password Reset] Email failed:', emailResult.error)
-        return { success: false, error: 'Failed to send reset email. Please try again later.' }
+        // In development, include the actual error to help debug SMTP config (e.g. Gmail App Password)
+        const errorMsg =
+          config.env.isDevelopment && emailResult.error
+            ? `Failed to send reset email: ${emailResult.error}`
+            : 'Failed to send reset email. Please try again later.'
+        return { success: false, error: errorMsg }
       }
       return { success: true }
     }
@@ -247,7 +252,12 @@ export async function requestPasswordReset(formData: FormData): Promise<RequestP
     return { success: false, error: 'Email service is not configured. Please contact support.' }
   } catch (error) {
     console.error('Password reset request error:', error)
-    return { success: false, error: 'An error occurred. Please try again.' }
+    // In development, surface the actual error to help debug (e.g. SMTP config issues)
+    const message =
+      config.env.isDevelopment && error instanceof Error
+        ? `An error occurred: ${error.message}`
+        : 'An error occurred. Please try again.'
+    return { success: false, error: message }
   }
 }
 
@@ -291,6 +301,10 @@ export async function resetPassword(formData: FormData): Promise<ResetPasswordRe
     return { success: true }
   } catch (error) {
     console.error('Password reset error:', error)
-    return { success: false, error: 'An error occurred. Please try again.' }
+    const message =
+      config.env.isDevelopment && error instanceof Error
+        ? `An error occurred: ${error.message}`
+        : 'An error occurred. Please try again.'
+    return { success: false, error: message }
   }
 }
