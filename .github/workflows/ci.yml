@@ -131,6 +131,7 @@ jobs:
           payload: |
             text: |
               *CI - Cypress Tests* ${{ steps.cypress.outcome == 'success' && ':white_check_mark:' || ':x:' }}
+              *Repository:* ${{ github.repository }}
               *Status:* ${{ steps.cypress.outcome }}
               *Branch:* ${{ github.ref_name }}
               *Triggered by:* @${{ github.actor }}
