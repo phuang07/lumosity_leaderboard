@@ -66,6 +66,7 @@ jobs:
         run: mkdir -p cypress/reports
 
       - name: Run Cypress tests
+        id: cypress
         uses: cypress-io/github-action@v6
         with:
           start: npm start -- -p 3001
@@ -120,6 +121,20 @@ jobs:
           path: cypress/reports/merged-report.json
           retention-days: 30
           if-no-files-found: ignore
+
+      - name: Send Slack notification
+        if: always()
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: |
+              *CI - Cypress Tests* ${{ steps.cypress.outcome == 'success' && ':white_check_mark:' || ':x:' }}
+              *Status:* ${{ steps.cypress.outcome }}
+              *Branch:* ${{ github.ref_name }}
+              *Triggered by:* @${{ github.actor }}
+              *Run:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>
 
       - name: Generate test summary
         if: always()
