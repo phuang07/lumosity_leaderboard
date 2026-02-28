@@ -9,15 +9,31 @@ function getTransporter(): nodemailer.Transporter | null {
   }
 
   if (!transporter) {
-    transporter = nodemailer.createTransport({
-      host: config.smtp.host,
-      port: config.smtp.port,
-      secure: config.smtp.secure,
-      auth: {
-        user: config.smtp.user,
-        pass: config.smtp.pass,
-      },
-    })
+    const isGmail = config.smtp.host.toLowerCase().includes('gmail.com')
+
+    if (isGmail) {
+      // Gmail requires App Passwords (not regular password). Use service: 'gmail'
+      // for correct host/port/TLS configuration.
+      transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: config.smtp.user,
+          pass: config.smtp.pass,
+        },
+      })
+    } else {
+      transporter = nodemailer.createTransport({
+        host: config.smtp.host,
+        port: config.smtp.port,
+        secure: config.smtp.secure,
+        // Port 587 uses STARTTLS - require TLS upgrade for non-secure connections
+        requireTLS: !config.smtp.secure && config.smtp.port === 587,
+        auth: {
+          user: config.smtp.user,
+          pass: config.smtp.pass,
+        },
+      })
+    }
   }
 
   return transporter
@@ -32,7 +48,17 @@ export async function sendPasswordResetEmail(
   to: string,
   resetLink: string
 ): Promise<SendPasswordResetEmailResult> {
-  const transport = getTransporter()
+  let transport: nodemailer.Transporter | null = null
+  try {
+    transport = getTransporter()
+  } catch (err) {
+    console.error('[Email] Failed to create transporter:', err)
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : 'Failed to initialize email service',
+    }
+  }
+
   if (!transport) {
     return { success: false, error: 'Email service is not configured' }
   }
