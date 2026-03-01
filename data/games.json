@@ -449,6 +449,18 @@
       "description": "Organize and sequence organic elements to improve logical reasoning and pattern recognition",
       "category": "PROBLEM_SOLVING",
       "icon": "/icons/organic-order.png"
+    },
+    {
+      "name": "Cognition Kitchen",
+      "description": "Cook up solutions by adapting to changing recipes and kitchen rules to improve cognitive flexibility",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/cognition-kitchen.png"
+    },
+    {
+      "name": "Halve your cake",
+      "description": "Divide cakes fairly and solve fraction puzzles to improve mathematical reasoning and problem-solving",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/halve-your-cake.png"
     }
   ]
 }
