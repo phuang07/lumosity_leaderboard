@@ -14,6 +14,44 @@ interface ScoreEntryFormProps {
   userId: string
 }
 
+// Message variations when user dethrones the previous leader
+const DETHRONE_MESSAGES = [
+  (game: string, prev: string) =>
+    `🎉 BOOM! You just dethroned ${prev} in ${game}! The crown is yours, champion—don't let it go to your head (too much).`,
+  (game: string, prev: string) =>
+    `${prev} never saw it coming! You've snagged the lead in ${game} like a brain-training ninja. Keep that momentum going!`,
+  (game: string, prev: string) =>
+    `🏆 Lead status: SNAPPED. ${prev} is now in your rearview mirror in ${game}. Time to defend that throne!`,
+  (game: string, prev: string) =>
+    `Mission accomplished! You've officially stolen the spotlight from ${prev} in ${game}. They'll be seeing your name in their dreams now.`,
+  (game: string, prev: string) =>
+    `${prev} who? Just kidding—you just crushed their record in ${game}! The leaderboard is yours. Own it!`,
+  (game: string, prev: string) =>
+    `Out with the old, in with the YOU! ${prev} has been demoted in ${game}. Enjoy the view from the top! 🚀`,
+  (game: string, prev: string) =>
+    `Another one bites the dust! ${prev} has been toppled by your mighty score in ${game}. Keep climbing—the sky's the limit!`,
+]
+
+// Message variations when user is first to conquer the game
+const FIRST_LEADER_MESSAGES = [
+  (game: string) =>
+    `🌟 Pioneer alert! You're the first to conquer ${game}! The throne was empty—and now it's yours. Set the bar high!`,
+  (game: string) =>
+    `🚀 History in the making! You've claimed ${game} as your kingdom. No one else has dared—you're the trailblazer!`,
+  (game: string) =>
+    `👑 First blood! You've planted your flag in ${game}. Everyone else is playing catch-up now. Own it!`,
+  (game: string) =>
+    `⚡ Ground zero! You're the inaugural champion of ${game}. The leaderboard is your canvas—paint it proud!`,
+  (game: string) =>
+    `🎯 Bullseye! Nobody's topped ${game} yet—until you. You've set the standard. Now defend it!`,
+  (game: string) =>
+    `✨ The throne was waiting! You're the first ruler of ${game}. May your reign be long and your scores stay high!`,
+]
+
+function pickRandom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)]
+}
+
 export default function ScoreEntryForm({ games, userId }: ScoreEntryFormProps) {
   const [selectedGame, setSelectedGame] = useState('')
   const [score, setScore] = useState('')
@@ -32,7 +70,17 @@ export default function ScoreEntryForm({ games, userId }: ScoreEntryFormProps) {
       })
 
       if (result.success) {
-        setMessage({ type: 'success', text: result.message || 'Score submitted successfully!' })
+        let displayMessage = result.message || 'Score submitted successfully!'
+
+        if (result.newLeader && result.gameName) {
+          if (result.isFirstLeader) {
+            displayMessage = pickRandom(FIRST_LEADER_MESSAGES)(result.gameName)
+          } else if (result.previousLeader) {
+            displayMessage = pickRandom(DETHRONE_MESSAGES)(result.gameName, result.previousLeader)
+          }
+        }
+
+        setMessage({ type: 'success', text: displayMessage })
         setScore('')
         setSelectedGame('')
       } else {
