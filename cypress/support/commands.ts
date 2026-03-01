@@ -25,6 +25,13 @@ declare global {
        * @example cy.logout()
        */
       logout(): Chainable<void>
+      
+      /**
+       * Select a game from the type-ahead dropdown (1-based index to match old select behavior)
+       * @example cy.selectGame(1) - select first game
+       * @example cy.selectGame(2) - select second game
+       */
+      selectGame(index: number): Chainable<void>
     }
   }
 }
@@ -52,6 +59,12 @@ Cypress.Commands.add('logout', () => {
   cy.get('button').contains(/^[A-Z]{1,2}$/).click()
   // Click sign out
   cy.contains('Sign Out').click()
+})
+
+// Select game from type-ahead (1-based index: 1 = first game, 2 = second game, etc.)
+Cypress.Commands.add('selectGame', (index: number) => {
+  cy.get('[data-cy="game-search-input"]').click()
+  cy.get('[data-cy="game-option"]').should('be.visible').eq(index - 1).click()
 })
 
 export {}

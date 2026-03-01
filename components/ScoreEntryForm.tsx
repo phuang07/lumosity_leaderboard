@@ -154,6 +154,7 @@ export default function ScoreEntryForm({ games, userId }: ScoreEntryFormProps) {
             className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary"
             required
             autoComplete="off"
+            data-cy="game-search-input"
           />
           {isOpen && (
             <div className="absolute z-50 w-full mt-1 bg-white border-2 border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
@@ -163,6 +164,9 @@ export default function ScoreEntryForm({ games, userId }: ScoreEntryFormProps) {
                     key={game.id}
                     type="button"
                     onClick={() => handleSelectGame(game)}
+                    data-cy="game-option"
+                    data-cy-game-id={game.id}
+                    data-cy-game-name={game.name}
                     className={`w-full px-4 py-2.5 text-left flex justify-between items-center transition-colors ${
                       index === highlightedIndex
                         ? 'bg-primary/10 text-primary'
