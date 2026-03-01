@@ -67,6 +67,109 @@
         userMenu.classList.remove('open');
       }
     });
+
+    // Game type-ahead data (matches optgroup structure from original design)
+    const gamesData = [
+      { id: '1', name: 'Speed Match', category: 'Attention' },
+      { id: '2', name: 'Train of Thought', category: 'Attention' },
+      { id: '3', name: 'Ebb and Flow', category: 'Attention' },
+      { id: '4', name: 'Memory Matrix', category: 'Memory' },
+      { id: '5', name: 'Memory Lane', category: 'Memory' },
+      { id: '6', name: 'Memory Match', category: 'Memory' },
+      { id: '7', name: 'Word Bubbles', category: 'Flexibility' },
+      { id: '8', name: 'Disillusion', category: 'Flexibility' },
+      { id: '9', name: 'Color Match', category: 'Flexibility' },
+      { id: '10', name: 'Speed Match Pro', category: 'Speed' },
+      { id: '11', name: 'Rush Hour', category: 'Speed' },
+      { id: '12', name: 'Raindrops', category: 'Problem Solving' },
+      { id: '13', name: 'Pet Detective', category: 'Problem Solving' },
+      { id: '14', name: 'Rotation Matrix', category: 'Problem Solving' }
+    ];
+
+    (function initGameTypeahead() {
+      const input = document.getElementById('gameSearch');
+      const dropdown = document.getElementById('gameDropdown');
+      const hiddenInput = document.getElementById('selectedGameId');
+      let highlightedIndex = -1;
+
+      function filterGames(query) {
+        const q = query.toLowerCase();
+        return gamesData.filter(g => 
+          g.name.toLowerCase().includes(q) || g.category.toLowerCase().includes(q)
+        );
+      }
+
+      function renderDropdown(games) {
+        if (games.length === 0) {
+          dropdown.innerHTML = '<div class="game-typeahead-empty">No games found. Try a different search.</div>';
+        } else {
+          dropdown.innerHTML = games.map((g, i) => 
+            `<button type="button" class="game-typeahead-item" data-id="${g.id}" data-name="${g.name}" data-index="${i}">
+              <span class="game-typeahead-name">${g.name}</span>
+              <span class="game-typeahead-category">${g.category}</span>
+            </button>`
+          ).join('');
+        }
+        dropdown.style.display = 'block';
+        highlightedIndex = -1;
+      }
+
+      function selectGame(game) {
+        input.value = game.name;
+        hiddenInput.value = game.id;
+        dropdown.style.display = 'none';
+        input.blur();
+      }
+
+      input.addEventListener('input', function() {
+        hiddenInput.value = '';
+        const games = filterGames(this.value);
+        renderDropdown(games);
+      });
+
+      input.addEventListener('focus', function() {
+        const games = filterGames(this.value);
+        renderDropdown(games.length ? games : gamesData);
+      });
+
+      input.addEventListener('keydown', function(e) {
+        const items = dropdown.querySelectorAll('.game-typeahead-item');
+        if (items.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          highlightedIndex = (highlightedIndex + 1) % items.length;
+          items.forEach((el, i) => el.classList.toggle('highlighted', i === highlightedIndex));
+          items[highlightedIndex]?.scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          highlightedIndex = highlightedIndex <= 0 ? items.length - 1 : highlightedIndex - 1;
+          items.forEach((el, i) => el.classList.toggle('highlighted', i === highlightedIndex));
+          items[highlightedIndex]?.scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'Enter' && highlightedIndex >= 0 && items[highlightedIndex]) {
+          e.preventDefault();
+          const game = gamesData.find(g => g.id === items[highlightedIndex].dataset.id);
+          if (game) selectGame(game);
+        } else if (e.key === 'Escape') {
+          dropdown.style.display = 'none';
+          highlightedIndex = -1;
+        }
+      });
+
+      dropdown.addEventListener('click', function(e) {
+        const item = e.target.closest('.game-typeahead-item');
+        if (item) {
+          const game = gamesData.find(g => g.id === item.dataset.id);
+          if (game) selectGame(game);
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.game-typeahead')) {
+          dropdown.style.display = 'none';
+        }
+      });
+    })();
   </script>
 
   <!-- Main Content -->
@@ -79,34 +182,14 @@
       <form style="margin-top: 1.5rem;">
         <div class="form-group">
           <label class="form-label">Select Game</label>
-          <select class="form-select" style="font-size: 1rem;">
-            <option>Choose a game...</option>
-            <optgroup label="Attention">
-              <option>Speed Match</option>
-              <option>Train of Thought</option>
-              <option>Ebb and Flow</option>
-            </optgroup>
-            <optgroup label="Memory">
-              <option>Memory Matrix</option>
-              <option>Memory Lane</option>
-              <option>Memory Match</option>
-            </optgroup>
-            <optgroup label="Flexibility">
-              <option>Word Bubbles</option>
-              <option>Disillusion</option>
-              <option>Color Match</option>
-            </optgroup>
-            <optgroup label="Speed">
-              <option>Speed Match</option>
-              <option>Speed Match Pro</option>
-              <option>Rush Hour</option>
-            </optgroup>
-            <optgroup label="Problem Solving">
-              <option>Raindrops</option>
-              <option>Pet Detective</option>
-              <option>Rotation Matrix</option>
-            </optgroup>
-          </select>
+          <div class="game-typeahead" style="position: relative;">
+            <input type="text" id="gameSearch" class="form-input" placeholder="Type to search games..." autocomplete="off" style="font-size: 1rem; padding: 1rem;">
+            <input type="hidden" id="selectedGameId" name="gameId">
+            <div id="gameDropdown" class="game-typeahead-dropdown" style="display: none;"></div>
+          </div>
+          <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+            Start typing to quickly find your game
+          </div>
         </div>
 
         <div class="form-group">

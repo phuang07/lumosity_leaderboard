@@ -26,29 +26,16 @@ describe('Score Deletion', () => {
     cy.visit('/score-entry')
     
     // Submit first score
-    cy.get('select').first().then(($select) => {
-      const firstOption = $select.find('option').eq(1).val() as string
-      const firstGameName = $select.find('option').eq(1).text()
-      
-      cy.get('select').first().select(firstOption)
-      cy.get('input[type="number"]').type('1000')
-      cy.get('button[type="submit"]').click()
-      
-      // Wait for success message
-      cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
-      
-      // Submit second score
-      cy.get('select').first().then(($select2) => {
-        const options = $select2.find('option')
-        if (options.length > 2) {
-          const secondOption = options.eq(2).val() as string
-          cy.get('select').first().select(secondOption)
-          cy.get('input[type="number"]').clear().type('2000')
-          cy.get('button[type="submit"]').click()
-          cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
-        }
-      })
-    })
+    cy.selectGame(1)
+    cy.get('input[type="number"]').type('1000')
+    cy.get('button[type="submit"]').click()
+    cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+    
+    // Submit second score
+    cy.selectGame(2)
+    cy.get('input[type="number"]').clear().type('2000')
+    cy.get('button[type="submit"]').click()
+    cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
   })
 
   beforeEach(() => {
@@ -64,7 +51,7 @@ describe('Score Deletion', () => {
       cy.get('body').then(($body) => {
         if ($body.text().includes('No scores yet')) {
           // If no scores, submit one first
-          cy.get('select').first().select(1)
+          cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
           cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
@@ -81,7 +68,7 @@ describe('Score Deletion', () => {
     it('should show delete button with trash icon', () => {
       cy.get('body').then(($body) => {
         if ($body.text().includes('No scores yet')) {
-          cy.get('select').first().select(1)
+          cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
           cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
@@ -99,7 +86,7 @@ describe('Score Deletion', () => {
     it('should show confirmation dialog when delete button is clicked', () => {
       cy.get('body').then(($body) => {
         if ($body.text().includes('No scores yet')) {
-          cy.get('select').first().select(1)
+          cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
           cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
@@ -122,7 +109,7 @@ describe('Score Deletion', () => {
     it('should cancel deletion when user clicks cancel in confirmation dialog', () => {
       cy.get('body').then(($body) => {
         if ($body.text().includes('No scores yet')) {
-          cy.get('select').first().select(1)
+          cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
           cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
@@ -153,7 +140,7 @@ describe('Score Deletion', () => {
       // Ensure we have at least one score
       cy.get('body').then(($body) => {
         if ($body.text().includes('No scores yet')) {
-          cy.get('select').first().select(1)
+          cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
           cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
@@ -190,7 +177,7 @@ describe('Score Deletion', () => {
 
     it('should remove score from the list after deletion', () => {
       // Submit a score first
-      cy.get('select').first().select(1)
+      cy.selectGame(1)
       cy.get('input[type="number"]').type('2500')
       cy.get('button[type="submit"]').click()
       cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
@@ -225,13 +212,13 @@ describe('Score Deletion', () => {
         
         if (scoreCount < 2) {
           // Submit additional scores
-          cy.get('select').first().select(1)
+          cy.selectGame(1)
           cy.get('input[type="number"]').type('3000')
           cy.get('button[type="submit"]').click()
           cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
           cy.reload()
 
-          cy.get('select').first().select(2)
+          cy.selectGame(2)
           cy.get('input[type="number"]').clear().type('4000')
           cy.get('button[type="submit"]').click()
           cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
@@ -267,7 +254,7 @@ describe('Score Deletion', () => {
       // Ensure we have a score to delete
       cy.get('body').then(($body) => {
         if ($body.text().includes('No scores yet')) {
-          cy.get('select').first().select(1)
+          cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
           cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
@@ -303,7 +290,7 @@ describe('Score Deletion', () => {
       })
 
       // Submit a new score
-      cy.get('select').first().select(1)
+      cy.selectGame(1)
       cy.get('input[type="number"]').type('5000')
       cy.get('button[type="submit"]').click()
       cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
@@ -333,7 +320,7 @@ describe('Score Deletion', () => {
       // Ensure we have a score
       cy.get('body').then(($body) => {
         if ($body.text().includes('No scores yet')) {
-          cy.get('select').first().select(1)
+          cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
           cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
