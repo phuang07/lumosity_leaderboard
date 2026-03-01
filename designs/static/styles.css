@@ -303,6 +303,63 @@ body {
   border-color: var(--primary);
 }
 
+/* Game Type-ahead */
+.game-typeahead-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.25rem;
+  background: var(--bg-white);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px var(--shadow-lg);
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.game-typeahead-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.game-typeahead-item:hover,
+.game-typeahead-item.highlighted {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary);
+}
+
+.game-typeahead-name {
+  font-weight: 500;
+}
+
+.game-typeahead-category {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.game-typeahead-item:hover .game-typeahead-category,
+.game-typeahead-item.highlighted .game-typeahead-category {
+  color: var(--primary);
+  opacity: 0.8;
+}
+
+.game-typeahead-empty {
+  padding: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
 /* Stats */
 .stats-grid {
   display: grid;
