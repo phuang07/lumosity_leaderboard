@@ -102,10 +102,10 @@ export default async function DashboardPage() {
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-sm text-gray-600">Games Completed</span>
-                  <span className="font-semibold">{stats.gamesCompleted} / 50</span>
+                  <span className="font-semibold">{stats.gamesCompleted} / {games.length}</span>
                 </div>
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-primary to-secondary" style={{ width: `${Math.min((stats.gamesCompleted / 50) * 100, 100)}%` }}></div>
+                  <div className="h-full bg-gradient-to-r from-primary to-secondary" style={{ width: `${Math.min((stats.gamesCompleted / games.length) * 100, 100)}%` }}></div>
                 </div>
               </div>
               <div>

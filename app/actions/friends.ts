@@ -175,10 +175,13 @@ export async function compareWithFriend(userId: string, friendId: string) {
   const wins = comparisons.filter((c) => c.result === 'win').length
   const losses = comparisons.filter((c) => c.result === 'loss').length
 
+  const totalGamesCount = await prisma.game.count()
+
   return {
     comparisons,
     record: { wins, losses },
     userGamesCount: userScores.length,
     friendGamesCount: friendScores.length,
+    totalGamesCount,
   }
 }

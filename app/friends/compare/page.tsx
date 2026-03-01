@@ -127,7 +127,7 @@ export default function FriendComparePage() {
                     <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-primary to-secondary"
-                        style={{ width: `${(comparison.userGamesCount / 50) * 100}%` }}
+                        style={{ width: `${(comparison.userGamesCount / (comparison.totalGamesCount || 50)) * 100}%` }}
                       ></div>
                     </div>
                   </div>
@@ -145,7 +145,7 @@ export default function FriendComparePage() {
                     <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-primary to-secondary"
-                        style={{ width: `${(comparison.friendGamesCount / 50) * 100}%` }}
+                        style={{ width: `${(comparison.friendGamesCount / (comparison.totalGamesCount || 50)) * 100}%` }}
                       ></div>
                     </div>
                   </div>

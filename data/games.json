@@ -347,6 +347,108 @@
       "description": "Discover and remember treasures in the tide to strengthen spatial memory and visual recall",
       "category": "MEMORY",
       "icon": "/icons/tidal-treasures.png"
+    },
+    {
+      "name": "Memory Match Overdrive",
+      "description": "Advanced Memory Match that challenges working memory at a faster pace with continuous symbol tracking",
+      "category": "MEMORY",
+      "icon": "/icons/memory-match-overdrive.png"
+    },
+    {
+      "name": "Pinball Recall",
+      "description": "Memorize bumper locations and visualize ball bounces to determine where it lands",
+      "category": "MEMORY",
+      "icon": "/icons/pinball-recall.png"
+    },
+    {
+      "name": "Memory Serves",
+      "description": "Serve up memories by recalling sequences and patterns under pressure",
+      "category": "MEMORY",
+      "icon": "/icons/memory-serves.png"
+    },
+    {
+      "name": "Follow That Frog",
+      "description": "Track and remember the frog's path across lily pads to train spatial memory",
+      "category": "MEMORY",
+      "icon": "/icons/follow-that-frog.png"
+    },
+    {
+      "name": "Familiar Faces",
+      "description": "Recognize and recall faces to strengthen facial recognition and name-face association",
+      "category": "MEMORY",
+      "icon": "/icons/familiar-faces.png"
+    },
+    {
+      "name": "Speed Match Overdrive",
+      "description": "Advanced Speed Match that tests rapid information processing at maximum pace",
+      "category": "SPEED",
+      "icon": "/icons/speed-match-overdrive.png"
+    },
+    {
+      "name": "River Ranger",
+      "description": "Navigate the river quickly while making split-second decisions to improve processing speed",
+      "category": "SPEED",
+      "icon": "/icons/river-ranger.png"
+    },
+    {
+      "name": "Penguin Pursuit",
+      "description": "Chase and catch targets in this fast-paced speed and tracking game",
+      "category": "SPEED",
+      "icon": "/icons/penguin-pursuit.png"
+    },
+    {
+      "name": "Brain Shift Overdrive",
+      "description": "Advanced Brain Shift with faster pace to challenge multitasking and cognitive flexibility",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/brain-shift-overdrive.png"
+    },
+    {
+      "name": "Assist Ants",
+      "description": "Help ants reach their destination by directing them to improve attention and planning",
+      "category": "ATTENTION",
+      "icon": "/icons/assist-ants.png"
+    },
+    {
+      "name": "Birdwatching",
+      "description": "Locate birds on screen and identify letters to train visual attention and field awareness",
+      "category": "ATTENTION",
+      "icon": "/icons/birdwatching.png"
+    },
+    {
+      "name": "Top Chimp",
+      "description": "Identify the top performer among chimps to sharpen attention and comparison skills",
+      "category": "ATTENTION",
+      "icon": "/icons/top-chimp.png"
+    },
+    {
+      "name": "Space Junk",
+      "description": "Track and clear space debris to improve sustained attention and visual tracking",
+      "category": "ATTENTION",
+      "icon": "/icons/space-junk.png"
+    },
+    {
+      "name": "Skyrise",
+      "description": "Build towers by matching patterns to train attention and spatial awareness",
+      "category": "ATTENTION",
+      "icon": "/icons/skyrise.png"
+    },
+    {
+      "name": "Pirate Passage",
+      "description": "Navigate your ship to collect treasure while dodging pirates through planning and spatial visualization",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/pirate-passage.png"
+    },
+    {
+      "name": "Masterpiece",
+      "description": "Recreate art masterpieces by solving spatial and pattern puzzles",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/masterpiece.png"
+    },
+    {
+      "name": "Organic Order",
+      "description": "Organize and sequence organic elements to improve logical reasoning and pattern recognition",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/organic-order.png"
     }
   ]
 }
