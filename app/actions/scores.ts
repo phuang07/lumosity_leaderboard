@@ -27,6 +27,31 @@ export async function submitScore(userId: string, data: { gameId: string; score:
       return { success: false, message: 'New score must be higher than existing score' }
     }
 
+    // Check if user will become new leader (before upsert)
+    const game = await prisma.game.findUnique({
+      where: { id: validated.gameId },
+      select: { name: true },
+    })
+    const topScore = await prisma.score.findFirst({
+      where: { gameId: validated.gameId },
+      orderBy: { score: 'desc' },
+      include: { user: { select: { id: true, username: true } } },
+    })
+
+    let newLeader = false
+    let isFirstLeader = false
+    let previousLeader: string | undefined
+
+    if (!topScore) {
+      // No scores yet - user will be first leader
+      newLeader = true
+      isFirstLeader = true
+    } else if (topScore.userId !== userId && validated.score > topScore.score) {
+      // User is dethroning the current leader
+      newLeader = true
+      previousLeader = topScore.user.username
+    }
+
     // Upsert score
     await prisma.score.upsert({
       where: {
@@ -55,8 +80,18 @@ export async function submitScore(userId: string, data: { gameId: string; score:
 
     revalidatePath('/dashboard')
     revalidatePath('/leaderboard')
+    revalidatePath('/score-entry')
 
-    return { success: true, message: 'Score submitted successfully' }
+    return {
+      success: true,
+      message: 'Score submitted successfully',
+      ...(newLeader && {
+        newLeader: true,
+        gameName: game?.name,
+        isFirstLeader,
+        previousLeader,
+      }),
+    }
   } catch (error) {
     console.error('Error submitting score:', error)
     return { success: false, message: 'Failed to submit score' }
