@@ -68,6 +68,99 @@
         userMenu.classList.remove('open');
       }
     });
+
+    // Dashboard game type-ahead
+    const dashboardGames = [
+      { id: '1', name: 'Speed Match', category: 'Attention' },
+      { id: '2', name: 'Memory Matrix', category: 'Memory' },
+      { id: '3', name: 'Train of Thought', category: 'Attention' },
+      { id: '4', name: 'Word Bubbles', category: 'Flexibility' },
+      { id: '5', name: 'Ebb and Flow', category: 'Attention' }
+    ];
+
+    (function initDashboardGameTypeahead() {
+      const input = document.getElementById('dashboardGameSearch');
+      const dropdown = document.getElementById('dashboardGameDropdown');
+      const hiddenInput = document.getElementById('dashboardSelectedGameId');
+      let highlightedIndex = -1;
+
+      function filterGames(query) {
+        const q = query.toLowerCase();
+        return dashboardGames.filter(g => 
+          g.name.toLowerCase().includes(q) || g.category.toLowerCase().includes(q)
+        );
+      }
+
+      function renderDropdown(games) {
+        if (games.length === 0) {
+          dropdown.innerHTML = '<div class="game-typeahead-empty">No games found.</div>';
+        } else {
+          dropdown.innerHTML = games.map((g, i) => 
+            `<button type="button" class="game-typeahead-item" data-id="${g.id}" data-name="${g.name}" data-index="${i}">
+              <span class="game-typeahead-name">${g.name}</span>
+              <span class="game-typeahead-category">${g.category}</span>
+            </button>`
+          ).join('');
+        }
+        dropdown.style.display = 'block';
+        highlightedIndex = -1;
+      }
+
+      function selectGame(game) {
+        input.value = game.name;
+        hiddenInput.value = game.id;
+        dropdown.style.display = 'none';
+        input.blur();
+      }
+
+      input.addEventListener('input', function() {
+        hiddenInput.value = '';
+        renderDropdown(filterGames(this.value));
+      });
+
+      input.addEventListener('focus', function() {
+        const games = filterGames(this.value);
+        renderDropdown(games.length ? games : dashboardGames);
+      });
+
+      input.addEventListener('keydown', function(e) {
+        const items = dropdown.querySelectorAll('.game-typeahead-item');
+        if (items.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          highlightedIndex = (highlightedIndex + 1) % items.length;
+          items.forEach((el, i) => el.classList.toggle('highlighted', i === highlightedIndex));
+          items[highlightedIndex]?.scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          highlightedIndex = highlightedIndex <= 0 ? items.length - 1 : highlightedIndex - 1;
+          items.forEach((el, i) => el.classList.toggle('highlighted', i === highlightedIndex));
+          items[highlightedIndex]?.scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'Enter' && highlightedIndex >= 0 && items[highlightedIndex]) {
+          e.preventDefault();
+          const game = dashboardGames.find(g => g.id === items[highlightedIndex].dataset.id);
+          if (game) selectGame(game);
+        } else if (e.key === 'Escape') {
+          dropdown.style.display = 'none';
+          highlightedIndex = -1;
+        }
+      });
+
+      dropdown.addEventListener('click', function(e) {
+        const item = e.target.closest('.game-typeahead-item');
+        if (item) {
+          const game = dashboardGames.find(g => g.id === item.dataset.id);
+          if (game) selectGame(game);
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.game-typeahead')) {
+          dropdown.style.display = 'none';
+        }
+      });
+    })();
   </script>
 
   <!-- Main Content -->
@@ -106,14 +199,11 @@
         <form>
           <div class="form-group">
             <label class="form-label">Game</label>
-            <select class="form-select">
-              <option>Select a game...</option>
-              <option>Speed Match</option>
-              <option>Memory Matrix</option>
-              <option>Train of Thought</option>
-              <option>Word Bubbles</option>
-              <option>Ebb and Flow</option>
-            </select>
+            <div class="game-typeahead" style="position: relative;">
+              <input type="text" id="dashboardGameSearch" class="form-input" placeholder="Type to search games..." autocomplete="off">
+              <input type="hidden" id="dashboardSelectedGameId" name="gameId">
+              <div id="dashboardGameDropdown" class="game-typeahead-dropdown" style="display: none;"></div>
+            </div>
           </div>
           <div class="form-group">
             <label class="form-label">Score</label>
