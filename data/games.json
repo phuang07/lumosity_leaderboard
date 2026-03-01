@@ -317,6 +317,36 @@
       "description": "Feed fish while tracking which ones you have fed to train divided attention and multiple object tracking",
       "category": "ATTENTION",
       "icon": "/icons/playing-koi.png"
+    },
+    {
+      "name": "What is your name",
+      "description": "Remember and recall names to strengthen name-face association and verbal memory",
+      "category": "MEMORY",
+      "icon": "/icons/what-is-your-name.png"
+    },
+    {
+      "name": "Penguin Rally",
+      "description": "Race penguins through icy courses to improve processing speed and quick decision-making",
+      "category": "SPEED",
+      "icon": "/icons/penguin-rally.png"
+    },
+    {
+      "name": "Speed pack",
+      "description": "Rapid-fire challenges that test your processing speed and reaction time",
+      "category": "SPEED",
+      "icon": "/icons/speed-pack.png"
+    },
+    {
+      "name": "Feel the beat",
+      "description": "Match rhythm and timing to improve auditory processing and response coordination",
+      "category": "SPEED",
+      "icon": "/icons/feel-the-beat.png"
+    },
+    {
+      "name": "Tidal Treasures",
+      "description": "Discover and remember treasures in the tide to strengthen spatial memory and visual recall",
+      "category": "MEMORY",
+      "icon": "/icons/tidal-treasures.png"
     }
   ]
 }
