@@ -247,6 +247,7 @@ export default function ScoreEntryForm({ games, userId }: ScoreEntryFormProps) {
         </div>
         {message && (
           <div
+            data-cy={message.type === 'success' ? 'score-success-message' : 'score-error-message'}
             className={`p-3 rounded-lg ${
               message.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
             }`}

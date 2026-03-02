@@ -461,6 +461,12 @@
       "description": "Divide cakes fairly and solve fraction puzzles to improve mathematical reasoning and problem-solving",
       "category": "PROBLEM_SOLVING",
       "icon": "/icons/halve-your-cake.png"
+    },
+    {
+      "name": "Star search",
+      "description": "Find and identify stars among visual patterns to train visual search and attention skills",
+      "category": "ATTENTION",
+      "icon": "/icons/star-search.png"
     }
   ]
 }

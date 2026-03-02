@@ -29,13 +29,13 @@ describe('Score Deletion', () => {
     cy.selectGame(1)
     cy.get('input[type="number"]').type('1000')
     cy.get('button[type="submit"]').click()
-    cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+    cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
     
     // Submit second score
     cy.selectGame(2)
     cy.get('input[type="number"]').clear().type('2000')
     cy.get('button[type="submit"]').click()
-    cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+    cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
   })
 
   beforeEach(() => {
@@ -54,7 +54,7 @@ describe('Score Deletion', () => {
           cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
-          cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+          cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
           cy.reload()
         }
       })
@@ -71,7 +71,7 @@ describe('Score Deletion', () => {
           cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
-          cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+          cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
           cy.reload()
         }
       })
@@ -89,7 +89,7 @@ describe('Score Deletion', () => {
           cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
-          cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+          cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
           cy.reload()
         }
       })
@@ -112,7 +112,7 @@ describe('Score Deletion', () => {
           cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
-          cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+          cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
           cy.reload()
         }
       })
@@ -143,7 +143,7 @@ describe('Score Deletion', () => {
           cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
-          cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+          cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
           cy.reload()
         }
       })
@@ -180,7 +180,7 @@ describe('Score Deletion', () => {
       cy.selectGame(1)
       cy.get('input[type="number"]').type('2500')
       cy.get('button[type="submit"]').click()
-      cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+      cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
       cy.reload()
 
       // Get the game name from the score card (the .font-semibold inside the score card with delete button)
@@ -215,13 +215,13 @@ describe('Score Deletion', () => {
           cy.selectGame(1)
           cy.get('input[type="number"]').type('3000')
           cy.get('button[type="submit"]').click()
-          cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+          cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
           cy.reload()
 
           cy.selectGame(2)
           cy.get('input[type="number"]').clear().type('4000')
           cy.get('button[type="submit"]').click()
-          cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+          cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
           cy.reload()
         }
       })
@@ -257,7 +257,7 @@ describe('Score Deletion', () => {
           cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
-          cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+          cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
           cy.reload()
         }
       })
@@ -293,7 +293,7 @@ describe('Score Deletion', () => {
       cy.selectGame(1)
       cy.get('input[type="number"]').type('5000')
       cy.get('button[type="submit"]').click()
-      cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+      cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
     })
   })
 
@@ -323,7 +323,7 @@ describe('Score Deletion', () => {
           cy.selectGame(1)
           cy.get('input[type="number"]').type('1500')
           cy.get('button[type="submit"]').click()
-          cy.contains('Score submitted successfully', { timeout: 5000 }).should('be.visible')
+          cy.get('[data-cy="score-success-message"]', { timeout: 5000 }).should('be.visible')
           cy.reload()
         }
       })
