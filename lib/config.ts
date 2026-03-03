@@ -52,7 +52,8 @@ export const config = {
 
   // Security
   security: {
-    cookieSecure: isProduction,
+    // In E2E/CI we use HTTP, so Secure cookies would not be sent - disable for tests
+    cookieSecure: isProduction && process.env.E2E_PASSWORD_RESET_LINK !== 'true',
     cookieSameSite: 'lax' as const,
     cookieMaxAge: 60 * 60 * 24 * 7, // 1 week
   },

@@ -199,7 +199,7 @@ describe('Score Deletion', () => {
         cy.wait(1000)
 
         // Verify the game name is no longer in the "Your Recent Scores" section
-        cy.contains('Your Recent Scores').parent().should('not.contain', trimmedName)
+        cy.contains('Your Recent Scores').closest('.rounded-xl').should('not.contain', trimmedName)
       })
     })
   })
