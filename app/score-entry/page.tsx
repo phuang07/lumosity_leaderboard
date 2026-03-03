@@ -84,7 +84,11 @@ export default async function ScoreEntryPage() {
                       )}
                       <div className="text-right">
                         <div className="text-2xl font-bold text-primary">{score.score.toLocaleString()}</div>
-                        <div className="text-xs text-gray-500">Personal Best</div>
+                        <div className="text-xs text-gray-500">
+                          {leaderByGame[score.gameId]?.username === user.username
+                            ? 'You'
+                            : leaderByGame[score.gameId]?.username ?? 'Personal Best'}
+                        </div>
                       </div>
                       <div className="flex-shrink-0">
                         <DeleteScoreButton scoreId={score.id} userId={user.id} gameName={score.game.name} />
