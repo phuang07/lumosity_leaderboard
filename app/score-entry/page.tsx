@@ -26,6 +26,20 @@ export default async function ScoreEntryPage() {
     take: 5,
   })
 
+  // Fetch leader (top) score for each game in recent scores
+  const gameIds = [...new Set(recentScores.map((s) => s.gameId))]
+  const topScores = await prisma.score.findMany({
+    where: { gameId: { in: gameIds } },
+    orderBy: { score: 'desc' },
+    include: { user: { select: { username: true } }, game: { select: { id: true } } },
+  })
+  const leaderByGame: Record<string, { score: number; username: string }> = {}
+  for (const s of topScores) {
+    if (!leaderByGame[s.gameId]) {
+      leaderByGame[s.gameId] = { score: s.score, username: s.user.username }
+    }
+  }
+
   // Group games by category
   const gamesByCategory = games.reduce((acc, game) => {
     if (!acc[game.category]) {
@@ -60,6 +74,14 @@ export default async function ScoreEntryPage() {
                       <div className="text-sm text-gray-600">{timeAgo}</div>
                     </div>
                     <div className="flex items-center gap-3 flex-shrink-0">
+                      {leaderByGame[score.gameId] && (
+                        <div className="text-right pr-4 border-r border-gray-200">
+                          <div className="text-xs text-gray-500 mb-0.5">Leader</div>
+                          <div className="text-lg font-semibold text-gray-900">
+                            {leaderByGame[score.gameId].score.toLocaleString()}
+                          </div>
+                        </div>
+                      )}
                       <div className="text-right">
                         <div className="text-2xl font-bold text-primary">{score.score.toLocaleString()}</div>
                         <div className="text-xs text-gray-500">Personal Best</div>
