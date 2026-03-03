@@ -17,8 +17,6 @@ describe('User Management with Roles', () => {
     password: 'testpassword123',
   }
 
-  let memberId = ''
-
   before(() => {
     cy.register(adminUser.username, adminUser.email, adminUser.password)
     cy.url().should('include', '/dashboard')
@@ -26,9 +24,8 @@ describe('User Management with Roles', () => {
 
     cy.register(memberUser.username, memberUser.email, memberUser.password)
     cy.url().should('include', '/dashboard')
-    cy.request('/api/auth/current').then((response) => {
-      memberId = response.body.id as string
-    })
+    // cy.request doesn't send browser cookies. Get memberId from the session cookie.
+    cy.getCookie('userId').its('value').as('memberId')
     cy.clearCookies()
   })
 
@@ -68,11 +65,13 @@ describe('User Management with Roles', () => {
     cy.visit('/user-management')
     cy.get('[data-cy="admin-user-management-section"]').should('be.visible')
 
-    cy.get(`[data-cy="admin-username-input-${memberId}"]`).clear().type(promotedUsername)
-    cy.get(`[data-cy="admin-role-select-${memberId}"]`).select('Admin')
-    cy.get(`[data-cy="admin-password-input-${memberId}"]`).clear().type(memberAdminUpdatedPassword)
-    cy.get(`[data-cy="admin-save-button-${memberId}"]`).click()
-    cy.get(`[data-cy="admin-message-${memberId}"]`).should('contain', 'updated successfully')
+    cy.get<string>('@memberId').then((memberId) => {
+      cy.get(`[data-cy="admin-username-input-${memberId}"]`).clear().type(promotedUsername)
+      cy.get(`[data-cy="admin-role-select-${memberId}"]`).select('Admin')
+      cy.get(`[data-cy="admin-password-input-${memberId}"]`).clear().type(memberAdminUpdatedPassword)
+      cy.get(`[data-cy="admin-save-button-${memberId}"]`).click()
+      cy.get(`[data-cy="admin-message-${memberId}"]`).should('contain', 'updated successfully')
+    })
 
     cy.clearCookies()
     cy.login(memberUser.email, memberSelfUpdatedPassword)
