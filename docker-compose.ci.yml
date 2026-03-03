@@ -1,0 +1,52 @@
+# Docker Compose configuration for CI Cypress testing
+# Usage: docker compose -f docker-compose.ci.yml up --abort-on-container-exit
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lumosity_test
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lumosity_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/lumosity_test
+      AUTH_SECRET: test-auth-secret-for-ci-pipeline-only
+      E2E_PASSWORD_RESET_LINK: "true"
+      NEXT_PUBLIC_APP_URL: http://app:3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  cypress:
+    image: cypress/included:15.9.0
+    depends_on:
+      app:
+        condition: service_started
+    environment:
+      CYPRESS_BASE_URL: http://app:3001
+      E2E_PASSWORD_RESET_LINK: "true"
+      APP_URL: http://app:3001
+    volumes:
+      - .:/e2e
+    working_dir: /e2e
+    command: >
+      sh -c "
+        echo 'Waiting for app at http://app:3001...' &&
+        node scripts/wait-for-app.js &&
+        echo 'Running Cypress tests...' &&
+        cypress run --browser chrome --config baseUrl=http://app:3001
+      "

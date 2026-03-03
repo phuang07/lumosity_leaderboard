@@ -7,77 +7,37 @@ on:
     branches: [master, main]
 
 env:
-  NODE_VERSION: '20'
-  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/lumosity_test
   AUTH_SECRET: test-auth-secret-for-ci-pipeline-only
 
 jobs:
   cypress-tests:
     runs-on: ubuntu-latest
-    
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: lumosity_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Generate Prisma client
-        run: npx prisma generate
-
-      - name: Push database schema
-        run: npx prisma db push
-        env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
-
-      - name: Seed database
-        run: npm run db:seed
-        env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
-
-      - name: Build Next.js application
-        run: npm run build
-        env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
-          AUTH_SECRET: ${{ env.AUTH_SECRET }}
-
       - name: Create reports directory
         run: mkdir -p cypress/reports
 
-      - name: Run Cypress tests
-        id: cypress
-        uses: cypress-io/github-action@v6
+      - name: Setup Node.js (for report merging)
+        uses: actions/setup-node@v4
         with:
-          start: npm start -- -p 3001
-          wait-on: 'http://localhost:3001'
-          wait-on-timeout: 120
-          browser: chrome
-        env:
-          E2E_PASSWORD_RESET_LINK: "true"
-          NEXT_PUBLIC_APP_URL: http://localhost:3001
-          DATABASE_URL: ${{ env.DATABASE_URL }}
-          AUTH_SECRET: ${{ env.AUTH_SECRET }}
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies (for report merging)
+        run: npm ci
+
+      - name: Run Cypress tests via Docker Compose
+        id: cypress
+        run: |
+          docker compose -f docker-compose.ci.yml build
+          set +e
+          docker compose -f docker-compose.ci.yml up --abort-on-container-exit
+          EXIT_CODE=$?
+          docker compose -f docker-compose.ci.yml down
+          exit $EXIT_CODE
 
       - name: Merge test reports
         if: always()
