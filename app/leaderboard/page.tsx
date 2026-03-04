@@ -40,6 +40,24 @@ export default function LeaderboardPage() {
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
   const [championsLoading, setChampionsLoading] = useState(true)
+  const [currentUser, setCurrentUser] = useState<{ username: string; role?: 'ADMIN' | 'MEMBER' } | null>(null)
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('/api/auth/current')
+        if (response.ok) {
+          const user = await response.json()
+          if (user) {
+            setCurrentUser({ username: user.username, role: user.role })
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching current user:', error)
+      }
+    }
+    fetchCurrentUser()
+  }, [])
 
   useEffect(() => {
     // Load games from JSON
@@ -91,7 +109,7 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header username="John Doe" />
+      <Header username={currentUser?.username ?? 'User'} role={currentUser?.role ?? 'MEMBER'} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
