@@ -467,6 +467,18 @@
       "description": "Find and identify stars among visual patterns to train visual search and attention skills",
       "category": "ATTENTION",
       "icon": "/icons/star-search.png"
+    },
+    {
+      "name": "Word Snatchers",
+      "description": "Unscramble letters to spell words that match definitions and build vocabulary proficiency",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/word-snatchers.png"
+    },
+    {
+      "name": "Contextual",
+      "description": "Use context clues to understand words and improve reading comprehension and vocabulary",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/contextual.png"
     }
   ]
 }
