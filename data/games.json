@@ -485,6 +485,12 @@
       "description": "Curated selection of brain-training challenges handpicked by our editors",
       "category": "FLEXIBILITY",
       "icon": "/icons/editor-choice.png"
+    },
+    {
+      "name": "Space Trace",
+      "description": "Track and trace paths through space to improve visual attention and spatial memory",
+      "category": "ATTENTION",
+      "icon": "/icons/space-trace.png"
     }
   ]
 }
