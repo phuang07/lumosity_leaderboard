@@ -491,6 +491,12 @@
       "description": "Track and trace paths through space to improve visual attention and spatial memory",
       "category": "ATTENTION",
       "icon": "/icons/space-trace.png"
+    },
+    {
+      "name": "Rule Out",
+      "description": "Eliminate possibilities and apply deductive reasoning to solve logic puzzles",
+      "category": "PROBLEM_SOLVING",
+      "icon": "/icons/rule-out.png"
     }
   ]
 }
