@@ -479,6 +479,12 @@
       "description": "Use context clues to understand words and improve reading comprehension and vocabulary",
       "category": "FLEXIBILITY",
       "icon": "/icons/contextual.png"
+    },
+    {
+      "name": "Editor Choice",
+      "description": "Curated selection of brain-training challenges handpicked by our editors",
+      "category": "FLEXIBILITY",
+      "icon": "/icons/editor-choice.png"
     }
   ]
 }
