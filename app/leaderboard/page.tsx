@@ -40,6 +40,7 @@ export default function LeaderboardPage() {
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
   const [championsLoading, setChampionsLoading] = useState(true)
+  const [currentUser, setCurrentUser] = useState<{ id: string; username: string; role: string } | null>(null)
 
   useEffect(() => {
     // Load games from JSON
@@ -48,13 +49,33 @@ export default function LeaderboardPage() {
   }, [])
 
   useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('/api/auth/current')
+        if (response.ok) {
+          const user = await response.json()
+          if (user) {
+            setCurrentUser({ id: user.id, username: user.username, role: user.role })
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching current user:', error)
+      }
+    }
+    fetchCurrentUser()
+  }, [])
+
+  useEffect(() => {
     fetchLeaderboard()
-  }, [type, selectedGame])
+  }, [type, selectedGame, currentUser?.id])
 
   const fetchLeaderboard = async () => {
     setLoading(true)
     try {
       let url = `/api/leaderboard?type=${type}`
+      if (type === 'friends' && currentUser?.id) {
+        url += `&userId=${encodeURIComponent(currentUser.id)}`
+      }
       if (selectedGame !== 'all') {
         // Find game ID by name
         const game = gamesData.games.find((g) => g.name === selectedGame)
@@ -91,7 +112,7 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header username="John Doe" />
+      <Header username={currentUser?.username} role={currentUser?.role} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
@@ -176,7 +197,7 @@ export default function LeaderboardPage() {
                     <tr
                       key={entry.userId}
                       className={`hover:bg-gray-50 ${
-                        entry.userId === 'mock-user-id' ? 'bg-blue-50 border-2 border-primary' : ''
+                        entry.userId === currentUser?.id ? 'bg-blue-50 border-2 border-primary' : ''
                       }`}
                     >
                       <td className="px-4 py-4">
@@ -205,7 +226,7 @@ export default function LeaderboardPage() {
                           <div>
                             <div className="font-semibold">
                               {entry.username}
-                              {entry.userId === 'mock-user-id' && (
+                              {entry.userId === currentUser?.id && (
                                 <span className="ml-2 px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-semibold">
                                   You
                                 </span>
