@@ -162,9 +162,7 @@ describe('User Login', () => {
     it('should logout successfully', () => {
       // Open user menu dropdown
       cy.get('[data-cy="user-menu-trigger"]').click()
-      
-      // Click sign out
-      cy.get('[data-cy="user-menu-sign-out"]').click()
+      cy.get('[data-cy="user-menu-sign-out"]').should('be.visible').click()
       
       // Should redirect to login page
       cy.url().should('include', '/login')
@@ -173,7 +171,7 @@ describe('User Login', () => {
     it('should not be able to access dashboard after logout', () => {
       // Logout via user menu
       cy.get('[data-cy="user-menu-trigger"]').click()
-      cy.get('[data-cy="user-menu-sign-out"]').click()
+      cy.get('[data-cy="user-menu-sign-out"]').should('be.visible').click()
       
       // Try to visit dashboard directly
       cy.visit('/dashboard')
@@ -185,9 +183,7 @@ describe('User Login', () => {
     it('should navigate to leaderboard via user menu', () => {
       // Open user menu dropdown
       cy.get('[data-cy="user-menu-trigger"]').click()
-      
-      // Click View Leaderboard
-      cy.get('[data-cy="user-menu-view-leaderboard"]').click()
+      cy.get('[data-cy="user-menu-view-leaderboard"]').should('be.visible').click()
       
       // Should navigate to leaderboard
       cy.url().should('include', '/leaderboard')
