@@ -42,6 +42,7 @@ export default function UserMenu({ username, role = 'MEMBER' }: UserMenuProps) {
   return (
     <div className="relative" ref={menuRef}>
       <button
+        data-cy="user-menu-trigger"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none"
       >
@@ -91,6 +92,7 @@ export default function UserMenu({ username, role = 'MEMBER' }: UserMenuProps) {
           </a>
 
           <a
+            data-cy="user-menu-view-leaderboard"
             href="/leaderboard"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
           >
@@ -116,6 +118,7 @@ export default function UserMenu({ username, role = 'MEMBER' }: UserMenuProps) {
           
           <div className="border-t border-gray-100 mt-2 pt-2">
             <button
+              data-cy="user-menu-sign-out"
               onClick={handleLogout}
               className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
             >

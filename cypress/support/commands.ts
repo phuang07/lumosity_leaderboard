@@ -56,9 +56,9 @@ Cypress.Commands.add('register', (username: string, email: string, password: str
 // Logout command
 Cypress.Commands.add('logout', () => {
   // Click on user menu to open dropdown
-  cy.get('button').contains(/^[A-Z]{1,2}$/).click()
+  cy.get('[data-cy="user-menu-trigger"]').click()
   // Click sign out
-  cy.contains('Sign Out').click()
+  cy.get('[data-cy="user-menu-sign-out"]').click()
 })
 
 // Select game from type-ahead (1-based index: 1 = first game, 2 = second game, etc.)
