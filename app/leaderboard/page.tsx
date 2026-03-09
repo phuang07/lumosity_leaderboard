@@ -40,7 +40,7 @@ export default function LeaderboardPage() {
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
   const [championsLoading, setChampionsLoading] = useState(true)
-  const [currentUser, setCurrentUser] = useState<{ id: string; username: string; role: string } | null>(null)
+  const [currentUser, setCurrentUser] = useState<{ id: string; username: string; role: 'ADMIN' | 'MEMBER' } | null>(null)
 
   useEffect(() => {
     // Load games from JSON
@@ -54,7 +54,7 @@ export default function LeaderboardPage() {
         const response = await fetch('/api/auth/current')
         if (response.ok) {
           const user = await response.json()
-          if (user) {
+          if (user && (user.role === 'ADMIN' || user.role === 'MEMBER')) {
             setCurrentUser({ id: user.id, username: user.username, role: user.role })
           }
         }
