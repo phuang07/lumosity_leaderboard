@@ -421,6 +421,12 @@
       "icon": "/icons/top-chimp.png"
     },
     {
+      "name": "Top That",
+      "description": "Compare and identify the top performer to sharpen attention and ranking skills",
+      "category": "ATTENTION",
+      "icon": "/icons/top-that.png"
+    },
+    {
       "name": "Space Junk",
       "description": "Track and clear space debris to improve sustained attention and visual tracking",
       "category": "ATTENTION",
