@@ -160,26 +160,33 @@ describe('User Login', () => {
     })
 
     it('should logout successfully', () => {
-      // Open user menu dropdown by clicking on the username text
-      cy.contains(testUser.username).click()
-      
-      // Click sign out
-      cy.contains('Sign Out').click()
+      // Open user menu dropdown
+      cy.get('[data-cy="user-menu-trigger"]').click()
+      cy.get('[data-cy="user-menu-sign-out"]').should('be.visible').click()
       
       // Should redirect to login page
       cy.url().should('include', '/login')
     })
 
     it('should not be able to access dashboard after logout', () => {
-      // Logout by clicking on username
-      cy.contains(testUser.username).click()
-      cy.contains('Sign Out').click()
+      // Logout via user menu
+      cy.get('[data-cy="user-menu-trigger"]').click()
+      cy.get('[data-cy="user-menu-sign-out"]').should('be.visible').click()
       
       // Try to visit dashboard directly
       cy.visit('/dashboard')
       
       // Should be redirected to login
       cy.url().should('include', '/login')
+    })
+
+    it('should navigate to leaderboard via user menu', () => {
+      // Open user menu dropdown
+      cy.get('[data-cy="user-menu-trigger"]').click()
+      cy.get('[data-cy="user-menu-view-leaderboard"]').should('be.visible').click()
+      
+      // Should navigate to leaderboard
+      cy.url().should('include', '/leaderboard')
     })
   })
 

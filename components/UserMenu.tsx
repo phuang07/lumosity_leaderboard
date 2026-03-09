@@ -42,6 +42,7 @@ export default function UserMenu({ username, role = 'MEMBER' }: UserMenuProps) {
   return (
     <div className="relative" ref={menuRef}>
       <button
+        data-cy="user-menu-trigger"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none"
       >
@@ -91,6 +92,19 @@ export default function UserMenu({ username, role = 'MEMBER' }: UserMenuProps) {
           </a>
 
           <a
+            data-cy="user-menu-view-leaderboard"
+            href="/leaderboard"
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <span className="flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              View Leaderboard
+            </span>
+          </a>
+
+          <a
             href="/user-management"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
           >
@@ -104,6 +118,7 @@ export default function UserMenu({ username, role = 'MEMBER' }: UserMenuProps) {
           
           <div className="border-t border-gray-100 mt-2 pt-2">
             <button
+              data-cy="user-menu-sign-out"
               onClick={handleLogout}
               className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
             >
