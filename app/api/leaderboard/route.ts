@@ -183,9 +183,36 @@ export async function GET(request: Request) {
       return NextResponse.json(leaderboard)
     }
 
-    // Original logic for all games leaderboard
+    // All games leaderboard - rank by games led (same logic as User Champions Summary)
+    // Get all games with their top scorer to compute games led per user
+    const games = await prisma.game.findMany({
+      include: {
+        scores: {
+          orderBy: { score: 'desc' },
+          take: 1,
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                avatarUrl: true,
+              },
+            },
+          },
+        },
+      },
+    })
+
+    const gamesLedMap = new Map<string, number>()
+    games.forEach((game) => {
+      if (game.scores.length > 0) {
+        const topUserId = game.scores[0].user.id
+        gamesLedMap.set(topUserId, (gamesLedMap.get(topUserId) || 0) + 1)
+      }
+    })
+
+    let userFilter: { userId?: { in: string[] } } = {}
     if (type === 'friends' && userId) {
-      // Get user's friends
       const friendships = await prisma.friendship.findMany({
         where: {
           OR: [
@@ -194,90 +221,50 @@ export async function GET(request: Request) {
           ],
         },
       })
-
       const friendIds = friendships.map((f) => (f.userId === userId ? f.friendId : f.userId))
-      friendIds.push(userId) // Include current user
-
-      const scores = await prisma.score.groupBy({
-        by: ['userId'],
-        where: {
-          userId: { in: friendIds },
-        },
-        _count: { gameId: true },
-        _sum: { score: true },
-      })
-
-      const leaderboard = await Promise.all(
-        scores.map(async (score) => {
-          const user = await prisma.user.findUnique({
-            where: { id: score.userId },
-            select: {
-              id: true,
-              username: true,
-              avatarUrl: true,
-            },
-          })
-
-          const bestGame = await prisma.score.findFirst({
-            where: { userId: score.userId },
-            orderBy: { score: 'desc' },
-            include: { game: true },
-          })
-
-          return {
-            userId: score.userId,
-            username: user?.username || 'Unknown',
-            avatarUrl: user?.avatarUrl,
-            gameCount: score._count.gameId,
-            totalScore: Number(score._sum.score || 0),
-            bestGame: bestGame?.game.name || null,
-          }
-        })
-      )
-
-      leaderboard.sort((a, b) => b.gameCount - a.gameCount)
-
-      return NextResponse.json(leaderboard)
-    } else {
-      // Global leaderboard
-      const scores = await prisma.score.groupBy({
-        by: ['userId'],
-        _count: { gameId: true },
-        _sum: { score: true },
-      })
-
-      const leaderboard = await Promise.all(
-        scores.map(async (score) => {
-          const user = await prisma.user.findUnique({
-            where: { id: score.userId },
-            select: {
-              id: true,
-              username: true,
-              avatarUrl: true,
-            },
-          })
-
-          const bestGame = await prisma.score.findFirst({
-            where: { userId: score.userId },
-            orderBy: { score: 'desc' },
-            include: { game: true },
-          })
-
-          return {
-            userId: score.userId,
-            username: user?.username || 'Unknown',
-            avatarUrl: user?.avatarUrl,
-            gameCount: score._count.gameId,
-            totalScore: Number(score._sum.score || 0),
-            bestGame: bestGame?.game.name || null,
-          }
-        })
-      )
-
-      leaderboard.sort((a, b) => b.gameCount - a.gameCount)
-
-      return NextResponse.json(leaderboard)
+      friendIds.push(userId)
+      userFilter = { userId: { in: friendIds } }
     }
+
+    const scores = await prisma.score.groupBy({
+      by: ['userId'],
+      where: userFilter,
+      _sum: { score: true },
+    })
+
+    const leaderboard = await Promise.all(
+      scores.map(async (score) => {
+        const user = await prisma.user.findUnique({
+          where: { id: score.userId },
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+          },
+        })
+
+        const bestGame = await prisma.score.findFirst({
+          where: { userId: score.userId },
+          orderBy: { score: 'desc' },
+          include: { game: true },
+        })
+
+        const gamesLed = gamesLedMap.get(score.userId) || 0
+
+        return {
+          userId: score.userId,
+          username: user?.username || 'Unknown',
+          avatarUrl: user?.avatarUrl,
+          gameCount: gamesLed,
+          totalScore: Number(score._sum.score || 0),
+          bestGame: bestGame?.game.name || null,
+        }
+      })
+    )
+
+    leaderboard.sort((a, b) => b.gameCount - a.gameCount)
+
+    return NextResponse.json(leaderboard)
   } catch (error) {
     console.error('Error fetching leaderboard:', error)
     return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 })
