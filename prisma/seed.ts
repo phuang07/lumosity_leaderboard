@@ -65,7 +65,17 @@ const games = loadGamesFromJSON()
 async function main() {
   console.log('Seeding database...')
 
-  // Create games
+  const gameNames = games.map((g) => g.name)
+
+  // Delete games that are no longer in the JSON
+  const deleted = await prisma.game.deleteMany({
+    where: { name: { notIn: gameNames } },
+  })
+  if (deleted.count > 0) {
+    console.log(`🗑️  Removed ${deleted.count} game(s) no longer in catalog`)
+  }
+
+  // Create or update games
   for (const game of games) {
     await prisma.game.upsert({
       where: { name: game.name },

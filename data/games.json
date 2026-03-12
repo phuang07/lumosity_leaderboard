@@ -427,12 +427,6 @@
       "icon": "/icons/top-that.png"
     },
     {
-      "name": "Space Junk",
-      "description": "Track and clear space debris to improve sustained attention and visual tracking",
-      "category": "ATTENTION",
-      "icon": "/icons/space-junk.png"
-    },
-    {
       "name": "Skyrise",
       "description": "Build towers by matching patterns to train attention and spatial awareness",
       "category": "ATTENTION",
