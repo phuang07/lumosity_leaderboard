@@ -62,10 +62,12 @@ function loadGamesFromJSON() {
 
 const games = loadGamesFromJSON()
 
+type GameFromJSON = { name: string; description: string; category: GameCategory; icon: string | null }
+
 async function main() {
   console.log('Seeding database...')
 
-  const gameNames = games.map((g) => g.name)
+  const gameNames = games.map((g: GameFromJSON) => g.name)
 
   // Delete games that are no longer in the JSON
   const deleted = await prisma.game.deleteMany({
