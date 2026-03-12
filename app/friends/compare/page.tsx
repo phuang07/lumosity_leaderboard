@@ -13,11 +13,14 @@ export default function FriendComparePage() {
   const [currentUserId, setCurrentUserId] = useState<string>('')
   const [currentUsername, setCurrentUsername] = useState<string>('')
   const [users, setUsers] = useState<User[]>([])
-  const [selectedUserId, setSelectedUserId] = useState('')
-  const [selectedUsername, setSelectedUsername] = useState('')
+  const [player1Id, setPlayer1Id] = useState('')
+  const [player2Id, setPlayer2Id] = useState('')
   const [comparison, setComparison] = useState<any>(null)
   const [loading, setLoading] = useState(false)
   const [usersLoading, setUsersLoading] = useState(true)
+
+  const player1 = users.find(u => u.id === player1Id)
+  const player2 = users.find(u => u.id === player2Id)
 
   useEffect(() => {
     // Get current user
@@ -56,11 +59,18 @@ export default function FriendComparePage() {
     fetchUsers()
   }, [])
 
+  // Pre-select current user in player 1 when they log in (only if not already set)
+  useEffect(() => {
+    if (currentUserId && users.length > 0 && !player1Id) {
+      setPlayer1Id(currentUserId)
+    }
+  }, [currentUserId, users, player1Id])
+
   const handleCompare = async () => {
-    if (!selectedUserId || !currentUserId) return
+    if (!player1Id || !player2Id || player1Id === player2Id) return
     setLoading(true)
     try {
-      const response = await fetch(`/api/friends/compare?userId=${currentUserId}&friendId=${selectedUserId}`)
+      const response = await fetch(`/api/friends/compare?userId=${player1Id}&friendId=${player2Id}`)
       const result = await response.json()
       setComparison(result)
     } catch (error) {
@@ -70,11 +80,7 @@ export default function FriendComparePage() {
     }
   }
 
-  const handleUserSelect = (userId: string) => {
-    setSelectedUserId(userId)
-    const selectedUser = users.find(u => u.id === userId)
-    setSelectedUsername(selectedUser?.username || '')
-  }
+  const canCompare = player1Id && player2Id && player1Id !== player2Id
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -82,33 +88,46 @@ export default function FriendComparePage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
           <h1 className="text-2xl font-bold mb-4">Compare Scores</h1>
-          <div className="flex gap-4">
+          <p className="text-gray-600 mb-4">Select any two players to compare their scores.</p>
+          <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-end">
             <select
-              value={selectedUserId}
-              onChange={(e) => handleUserSelect(e.target.value)}
+              value={player1Id}
+              onChange={(e) => setPlayer1Id(e.target.value)}
               disabled={usersLoading}
               className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary disabled:opacity-50"
             >
-              <option value="">Choose a player...</option>
-              {users
-                .filter(user => user.id !== currentUserId)
-                .map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.username}
-                  </option>
-                ))}
+              <option value="">Select player 1...</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id} disabled={user.id === player2Id}>
+                  {user.username}{user.id === currentUserId ? ' (you)' : ''}
+                </option>
+              ))}
+            </select>
+            <span className="hidden sm:inline self-center text-gray-400 font-medium">vs</span>
+            <select
+              value={player2Id}
+              onChange={(e) => setPlayer2Id(e.target.value)}
+              disabled={usersLoading}
+              className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary disabled:opacity-50"
+            >
+              <option value="">Select player 2...</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id} disabled={user.id === player1Id}>
+                  {user.username}{user.id === currentUserId ? ' (you)' : ''}
+                </option>
+              ))}
             </select>
             <button
               onClick={handleCompare}
-              disabled={!selectedUserId || loading || !currentUserId}
-              className="px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50"
+              disabled={!canCompare || loading}
+              className="px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50 shrink-0"
             >
               Compare
             </button>
           </div>
         </div>
 
-        {comparison && (
+        {comparison && player1 && player2 && (
           <>
             {/* Overall Comparison */}
             <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
@@ -117,8 +136,12 @@ export default function FriendComparePage() {
                 <div className="p-6 bg-gray-50 rounded-lg">
                   <div className="flex justify-between items-center mb-4 pb-4 border-b-2 border-gray-200">
                     <div>
-                      <div className="font-semibold mb-1">You</div>
-                      <div className="text-sm text-gray-600">{currentUsername || 'You'}</div>
+                      <div className="font-semibold mb-1">
+                        {player1.username}
+                        {player1.id === currentUserId && (
+                          <span className="ml-2 text-sm font-normal text-gray-500">(you)</span>
+                        )}
+                      </div>
                     </div>
                     <div className="text-4xl font-bold">{comparison.userGamesCount}</div>
                   </div>
@@ -135,8 +158,12 @@ export default function FriendComparePage() {
                 <div className="p-6 bg-gray-50 rounded-lg">
                   <div className="flex justify-between items-center mb-4 pb-4 border-b-2 border-gray-200">
                     <div>
-                      <div className="font-semibold mb-1">Player</div>
-                      <div className="text-sm text-gray-600">{selectedUsername || 'Selected Player'}</div>
+                      <div className="font-semibold mb-1">
+                        {player2.username}
+                        {player2.id === currentUserId && (
+                          <span className="ml-2 text-sm font-normal text-gray-500">(you)</span>
+                        )}
+                      </div>
                     </div>
                     <div className="text-4xl font-bold text-danger">{comparison.friendGamesCount}</div>
                   </div>
@@ -154,13 +181,16 @@ export default function FriendComparePage() {
               <div className="mt-6 p-4 bg-gray-50 rounded-lg text-center">
                 <div className="font-semibold mb-2">Head-to-Head Record</div>
                 <div className="text-2xl">
-                  <span className="text-danger">{comparison.record.losses}</span> -{' '}
-                  <span className="text-success">{comparison.record.wins}</span>
+                  <span className="text-success">{player1.username} wins: {comparison.record.wins}</span>
+                  <span className="mx-2">|</span>
+                  <span className="text-danger">{player2.username} wins: {comparison.record.losses}</span>
                 </div>
                 <div className="text-sm text-gray-600 mt-2">
-                  {comparison.record.losses > comparison.record.wins
-                    ? "You're behind. Keep playing!"
-                    : "You're ahead! Great job!"}
+                  {comparison.record.wins > comparison.record.losses
+                    ? `${player1.username} is ahead!`
+                    : comparison.record.losses > comparison.record.wins
+                    ? `${player2.username} is ahead!`
+                    : "It's a tie!"}
                 </div>
               </div>
             </div>
@@ -179,23 +209,23 @@ export default function FriendComparePage() {
                       <div className={`text-xl font-bold ${comp.userScore ? 'text-success' : 'text-gray-400'}`}>
                         {comp.userScore?.toLocaleString() || '-'}
                       </div>
-                      <div className="text-xs text-gray-600">You</div>
+                      <div className="text-xs text-gray-600">{player1.username}</div>
                     </div>
                     <div className="text-center">
                       <div className={`text-xl font-bold ${comp.friendScore ? 'text-danger' : 'text-gray-400'}`}>
                         {comp.friendScore?.toLocaleString() || '-'}
                       </div>
-                      <div className="text-xs text-gray-600">Player</div>
+                      <div className="text-xs text-gray-600">{player2.username}</div>
                     </div>
                     <div className="text-center">
                       {comp.result === 'win' && (
                         <span className="px-3 py-1 bg-success/10 text-success rounded-full text-xs font-semibold">
-                          Win
+                          {player1.username} wins
                         </span>
                       )}
                       {comp.result === 'loss' && (
                         <span className="px-3 py-1 bg-warning/10 text-warning rounded-full text-xs font-semibold">
-                          Loss
+                          {player2.username} wins
                         </span>
                       )}
                       {comp.result === 'tie' && (
