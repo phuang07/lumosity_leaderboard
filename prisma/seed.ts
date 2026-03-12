@@ -20,8 +20,10 @@ const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter })
 
 if (!config.env.isProduction) globalForPrisma.prisma = prisma
 
+type GameRecord = { name: string; description: string; category: GameCategory; icon: string | null }
+
 // Read games from JSON file
-function loadGamesFromJSON() {
+function loadGamesFromJSON(): GameRecord[] {
   try {
     const jsonPath = join(process.cwd(), 'data', 'games.json')
     const fileContent = readFileSync(jsonPath, 'utf-8')
@@ -32,7 +34,8 @@ function loadGamesFromJSON() {
     }
 
     // Map JSON data to Prisma format, converting category string to enum
-    return data.games.map((game: { name: string; description: string; category: string; icon?: string }) => {
+    type GameInput = { name: string; description: string; category: string; icon?: string }
+    return data.games.map((game: GameInput): GameRecord => {
       // Validate and convert category string to enum
       const categoryMap: Record<string, GameCategory> = {
         ATTENTION: GameCategory.ATTENTION,
